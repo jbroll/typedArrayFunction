@@ -52,8 +52,8 @@ var binary_ops = { and: "&&", or: "||",
 	
 var math_unary = [ "abs", "acos", "asin", "atan", "ceil", "cos", "exp", "floor", "log", "round", "sin", "sqrt", "tan" ];
 
-  for(var opname in math_unary) {
-    op = math_unary[opname]
+  for( i = 0; i < math_unary.length; i++ ) {
+    opname = op = math_unary[i]
 	
     ops[opname]                  = typedArrayFunction(new Function("return function (a, b   )    {            a = Math." + op + "(b); }")());
     ops[opname + "_mask"]        = typedArrayFunction(new Function("return function (a, b   , m) { if ( m ) { a = Math." + op + "(b); } }")());
@@ -62,7 +62,22 @@ var math_unary = [ "abs", "acos", "asin", "atan", "ceil", "cos", "exp", "floor",
   }
 
 var math_comm = [ "max", "min", "atan2", "pow" ];
+
+  for( i = 0; i < math_comm.length; i++ ) {
+    opname = op = math_comm[i]
+
+    ops[opname]                  = typedArrayFunction(new Function("return function (a, b, c)    {            a = Math." + op + "(b, c); }")());
+    ops[opname + "_mask"]        = typedArrayFunction(new Function("return function (a, b, c, m) { if ( m ) { a = Math." + op + "(b, c); } }")());
+  }
+
 var math_noncomm = [ "atan2", "pow" ];
+
+  for( i = 0; i < math_noncomm.length; i++ ) {
+    opname = op = math_noncomm[i]
+
+    ops[opname]                  = typedArrayFunction(new Function("return function (a, b, c)    {            a = Math." + op + "(b, c); }")());
+    ops[opname + "_mask"]        = typedArrayFunction(new Function("return function (a, b, c, m) { if ( m ) { a = Math." + op + "(b, c); } }")());
+  }
 
 
 a = ndarray(new Int32Array(2048*2048), [2048, 2048]);
@@ -70,8 +85,9 @@ b = ndarray(new Int32Array(2048*2048), [2048, 2048]);
 c = ndarray(new Int32Array(2048*2048), [2048, 2048]);
 d = ndarray(new Float32Array(2048*2048), [2048, 2048]);
 
+
 for ( var i = 0; i < 1000; i++ ) {
-    ops.add(a, b, c);
+    ops.cos(a, b, c);
     ops.add(a, b, d);
 }
 

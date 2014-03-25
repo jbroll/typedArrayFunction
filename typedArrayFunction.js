@@ -32,7 +32,7 @@
 	// Capture the function parameter names and place them in the 
 	// hash table with corrosponding real function arguments.
 	//
-	var type = "\n"
+	var type = ""
 	for ( i = 0; i < args.length; i++ ) {
 	    hash[args[i]] = actuals[i];
 	    type += "// var " + args[i] + " " + actuals[i].dtype + "\n"
