@@ -4,7 +4,8 @@
 
 "use strict";
 
-function () {
+(function () {
+    var i;
     var typedArrayFunction = require("./typedArrayFunction");
 
     var ops = {}, op;

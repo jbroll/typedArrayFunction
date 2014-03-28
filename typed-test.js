@@ -5,16 +5,17 @@
 "use strict";
 
 var ndarray = require("ndarray");
-var ndops   = require("ndarray-ops");
+//var ndops   = require("ndarray-ops");
+var ndops   = require("./ndarray-ops-typed");
 
-a = ndarray(new Int32Array(2048*2048), [2048, 2048]);
-b = ndarray(new Int32Array(2048*2048), [2048, 2048]);
-c = ndarray(new Int32Array(2048*2048), [2048, 2048]);
-d = ndarray(new Float32Array(2048*2048), [2048, 2048]);
+var a = ndarray(new Int32Array(2048*2048), [2048, 2048]);
+var b = ndarray(new Int32Array(2048*2048), [2048, 2048]);
+var c = ndarray(new Int32Array(2048*2048), [2048, 2048]);
+var d = ndarray(new Float32Array(2048*2048), [2048, 2048]);
 
 
 for ( var i = 0; i < 1000; i++ ) {
-    ops.cos(a, b, c);
-    ops.add(a, b, d);
+    ndops.cos(a, b, c);
+    ndops.add(a, b, d);
 }
 

@@ -1,10 +1,57 @@
 /*jslint white: true, vars: true, plusplus: true, nomen: true, unparam: true, evil: true, regexp: true */
 /*jshint node: true, -W099: true, laxbreak:true, laxcomma:true, multistr:true, smarttabs:true */
-/*globals Float32Array, Int32Array */ 
+/*globals */ 
 
 "use strict";
 
 (function() {
+
+    function replaceIdentifierRefs(str, func) {
+	var reply = "";
+
+	var state = -1, match, index, first, i = 0;
+
+	while ( i < str.length ) {
+	    match = str.match(/[a-zA-Z_][a-zA-Z0-9_]*/);		// Find an identifier in the string.
+
+	    if ( !match ) { break; }
+
+	    index = [];
+	    i     = match.index + match[0].length;
+
+	    state = 0;
+
+	    while ( i < str.length ) {
+		if ( str[i] === ']' ) {
+		    state--;
+
+		    if ( state === 0 ) {
+			index.push(str.substring(first, i)); 
+		    }
+		} else {
+		    if ( state === 0 ) {
+			if ( str[i] === '[' ) {
+			    first = i+1;
+			    state++;
+			}
+			if ( str[i] !== ' ' && str[i] !== '[' ) {
+			    break;
+			}
+		    } else {
+			if ( str[i] === '[' ) { state++; }
+		    }
+		}
+		i++;
+	    }
+
+	    reply += str.substr(0, match.index) + func(match[0], index);
+	    str    = str.substr(i);
+	    i = 0;
+	}
+
+	return reply + str.substr(i);
+    }
+
 
     function typedArrayFunctionConstructor() {
         var i;
@@ -42,13 +89,8 @@
 	// the indicies and recursivly replace them also.
 	//
 	function ReplaceArrayRefs(text) {
-	    return text.replace(/([a-zA-Z][a-zA-Z0-9]*)\s*((\[[^\][]*\] *)*)/g, function (m, id, Indx) {
+	    return replaceIdentifierRefs(text, function (id, indx) {
 		var i, indx = [], state = 0, offset;
-
-		for ( i = 0; i < Indx.length; i++ ) {
-		    if ( Indx[i] === "[" ) { if ( state++ === 0 ) { first = i+1; } }
-		    if ( Indx[i] === "]" ) { if ( state-- === 1 ) { indx.push(Indx.substring(first, i)); } }
-		}
 
 		for ( i = 0; i < indx.length; i++ ) {
 		    indx[i] = ReplaceArrayRefs(indx[i]);
@@ -76,7 +118,7 @@
 
 		    return id + "[" + offset + indx.join(" + ") + "]";
 		} else {
-		    return m;
+		    return id;
 		}
 
 	    });
