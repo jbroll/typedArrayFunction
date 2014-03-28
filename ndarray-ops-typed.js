@@ -19,9 +19,9 @@
       for(var opname in assign_ops) {
 	op = assign_ops[opname]
 
-	ops[opname]                  = typedArrayFunction(new Function("return function (a, b, c)    {            a = b " + op + " c; }")());
+	ops[opname]                  = typedArrayFunction(new Function("return function (a, b, c)    {            a = b " + op + " c; }  ")());
 	ops[opname + "_mask"]        = typedArrayFunction(new Function("return function (a, b, c, m) { if ( m ) { a = b " + op + " c; } }")());
-	ops[opname + "eq"]           = typedArrayFunction(new Function("return function (a, b   )    {            a " + op + "= b;    }")());
+	ops[opname + "eq"]           = typedArrayFunction(new Function("return function (a, b   )    {            a " + op + "= b;    }  ")());
 	ops[opname + "eq" + "_mask"] = typedArrayFunction(new Function("return function (a, b   , m) { if ( m ) { a " + op + "= b;    } }")());
       }
 

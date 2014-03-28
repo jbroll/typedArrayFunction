@@ -74,6 +74,7 @@
 	    body = body[1];
 	} else {
 	    body = body[0];
+	    post = "\nreturn " + args[0] + ";";
 	}
 
 	// Capture the function parameter names and place them in the 
