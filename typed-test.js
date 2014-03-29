@@ -8,7 +8,9 @@ var ndarray = require("ndarray");
 var ndops   = require("ndarray-ops");
 var tyops   = require("./ndarray-ops-typed");
 
-var size = 10;
+var typed   = require("./typedArrayFunction");
+
+var size = 2048;
 
 var a = ndarray(new Int32Array(size*size),   [size, size]);
 var b = ndarray(new Int32Array(size*size),   [size, size]);
@@ -16,16 +18,13 @@ var c = ndarray(new Int32Array(size*size),   [size, size]);
 var d = ndarray(new Float32Array(size*size), [size, size]);
 
 
-ndops.addseq(a, 1);
-tyops.addeq(b, 1);
+//ndops.addseq(a, 1);
+//tyops.addeq(b, 1);
+//console.log(ndops.equals(a, b));
 
-console.log(ndops.equals(a, b));
-
-
-process.exit(0);
 
 for ( var i = 0; i < 1000; i++ ) {
-    ndops.cos(a, b, c);
-    ndops.add(a, b, d);
+    tyops.cos(a, b, c);
+    tyops.add(a, b, d);
 }
 

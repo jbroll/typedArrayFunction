@@ -16,38 +16,44 @@
 
 	    if ( !match ) { break; }
 
+	    reply += str.substr(i, match.index)
+
 	    index = [];
 	    i     = match.index + match[0].length;
 
-	    state = 0;
+	    var x = true;
+	    while ( x && i < str.length ) {
+		while ( str[i] == ' ' ) { i++; }
+		switch ( str[i] ) {
+		 case "[": {
+		    state = 1;
+		    first = i+1;
+		    i++;
 
-	    while ( i < str.length ) {
-		if ( str[i] === ']' ) {
-		    state--;
-
-		    if ( state === 0 ) {
-			index.push(str.substring(first, i)); 
-		    }
-		} else {
-		    if ( state === 0 ) {
-			if ( str[i] === '[' ) {
-			    first = i+1;
+		    while ( state ) {
+			if ( str[i] == ']' ) {
+			    if ( state == 1 ) index.push(str.substring(first, i)); 
+			    state--;
+			}
+			if ( str[i] == '[' ) {
 			    state++;
+			    first = i+1;
 			}
-			if ( str[i] !== ' ' && str[i] !== '[' ) {
-			    break;
-			}
-		    } else {
-			if ( str[i] === '[' ) { state++; }
+			i++;
 		    }
+		 }
+		 default: {
+		    x = false;
+		    break;
+		 }
 		}
-		i++;
 	    }
 
-	    reply += str.substr(0, match.index) + func(match[0], index);
+	    reply += func(match[0], index);
 	    str    = str.substr(i);
 	    i = 0;
 	}
+
 
 	return reply + str.substr(i);
     }
@@ -62,10 +68,10 @@
 
 	var text = this.func.toString();
 
-	var x = text.match(/function \(([^()]*)\)[^]*{([^]*)}[^]*/);
+	var x = text.match(/function \(([^()]*)\)[^{]*{([^]*)}[^]*/);
 
 	var args = x[1].split(",").map(function(s) { return s.trim(); });
-	var body = x[2].split("// ----+");
+	var body = x[2].split(/\/\/ ----+/);
 	var prep = "", post = "";
 
 	if ( body.length > 1 ) {
@@ -91,11 +97,12 @@
 	//
 	function ReplaceArrayRefs(text) {
 	    return replaceIdentifierRefs(text, function (id, indx) {
-		var i, indx = [], state = 0, offset;
+		var i, state = 0, offset;
 
 		for ( i = 0; i < indx.length; i++ ) {
 		    indx[i] = ReplaceArrayRefs(indx[i]);
 		}
+
 
 		var arg = hash[id];
 
@@ -117,11 +124,14 @@
 		    if ( arg.offset !== 0 ) { 	offset = arg.offset + " + "; 
 		    } else {			offset = "" }
 
-		    return id + "[" + offset + indx.join(" + ") + "]";
+		    return id + "[" + offset + indx.join(" + ") + "] ";
 		} else {
-		    return id;
+		    if ( indx.length > 0 ) {
+			return id + "[" + indx.join(" + ") + "] ";
+		    } else {
+			return id + " ";
+		    }
 		}
-
 	    });
 	}
 	body = ReplaceArrayRefs(body);
@@ -144,7 +154,7 @@
 	     this.cache[func] = new Function(func)();
 	}
 
-	this.cache[func].apply(undefined, arguments);
+	return this.cache[func].apply(undefined, arguments);
     }
 
     module.exports = function (func) { return typedArrayFunctionConstructor.bind({ func: func }); };
