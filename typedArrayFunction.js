@@ -89,7 +89,7 @@
 	var type = ""
 	for ( i = 0; i < args.length; i++ ) {
 	    hash[args[i]] = actuals[i];
-	    type += "// var " + args[i] + " " + actuals[i].dtype + "\n"
+	    type += "// var " + args[i] + " " + actuals[i].dtype + " " + actuals[i].offset + " " + actuals[i].shape + " " + actuals[i].stride + "\n"
        	}
 
 	// Match each source code identifier and any associated array indexing.  Extract
