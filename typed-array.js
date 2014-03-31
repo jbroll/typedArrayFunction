@@ -18,6 +18,24 @@
 	  , float64: Float64Array
     };
 
+    function iota(n) {
+	var result = new Array(n)
+	    for(var i=0; i<n; ++i) {
+	    result[i] = i
+	}   
+	return result
+    }
+
+    function repeat(pattern, count) {
+	if (count < 1) return '';
+	var result = '';
+	while (count > 0) {
+	    if (count & 1) result += pattern;
+	    count >>= 1, pattern += pattern;
+	}
+	return result;
+    }
+
 
     function dim(x) {
     	if ( x.shape ) { return x.shape };
@@ -28,14 +46,18 @@
     };
 
     function extend(){
-	for(var i=1; i<arguments.length; i++)
-	    for(var key in arguments[i])
-		if(arguments[i].hasOwnProperty(key))
+	for(var i=1; i<arguments.length; i++) {
+	    for(var key in arguments[i]) {
+		if(arguments[i].hasOwnProperty(key)) {
 		    arguments[0][key] = arguments[i][key];
+		}
+	    }
+	}
 	return arguments[0];
     }
 
     function rep(s,v,k) {
+	if(v === undefined ) { v = 0; }
 	if(typeof k === "undefined") { k=0; }
 	var n = s[k], ret = Array(n), i;
 	if(k === s.length-1) {
@@ -43,7 +65,7 @@
 	    if(i===-1) { ret[0] = v; }
 	    return ret;
 	}
-	for(i=n-1;i>=0;i--) { ret[i] = numeric.rep(s,v,k+1); }
+	for(i=n-1;i>=0;i--) { ret[i] = rep(s,v,k+1); }
 	return ret;
     }
 
@@ -51,17 +73,17 @@
         var reply;
 	var i, n;
 
-	if ( dtype.dtype ) 		 { dtype = dtype.dtype;  }
-	if ( typeof dtype === "string" ) { dtype = typed[dtype]; }
+	if ( dtype && dtype.dtype ) 	 { dtype = dtype.dtype;  }
+	if ( typeof dtype === "string" ) { dtype = types[dtype]; }
 
-        if ( dtype === undefined && typeof dtype !== "function" ) {
-	    reply = rep(shape, value);
-	} else {
+        if ( typeof dtype === "function" ) {
 	    n = size(shape);
 	    reply = ndarray(new dtype(n), shape);
 	    if ( typeof value === "number" ) {
 		for ( i = 0; i < n; i++ ) { reply.data[i] = value; }
 	    }
+	} else {
+	    reply = rep(shape, value);
 	}
 
 	return reply;
@@ -94,9 +116,7 @@
 
 		    while ( state ) {
 			if ( str[i] === ']' ) {
-			    if ( state === 1 ) {
-				index.push(str.substring(first, i)); 
-			    }
+			    if ( state === 1 ) { index.push(str.substring(first, i)); }
 			    state--;
 			}
 			if ( str[i] === '[' ) {
@@ -111,8 +131,6 @@
 		    i++;
 		    while ( str[i] === ' ' ) { i++; }
 		    while ( str[i].match(/[ a-zA-Z0-9_]/) !== null ) { i++; }
-
-		    console.log(":" + str.substring(first, i) + ":");
 
 		    index.push(str.substring(first, i));
 
@@ -193,18 +211,16 @@
 
 		var arg = hash[id];
 		var dimen;
-		var joinStr;
+		var joinStr, bracket, fixindx;
 
 		if ( arg && typeof arg === "object" && (!opts.consider || ( opts.consider && opts.consider[args[i]] )) ) {
 
-		console.log(indx.length, indx[0]);
-
-		    if ( indx.length === 1 && indx[0][0] === "." ) {
-		        if ( ( indx[0].trim() === ".size" || indx[0].trim() === ".length" ) ) {
+		    if ( indx.length >= 1 && indx[0][0] === "." ) {
+		        if ( indx.length >= 2 && indx[0].trim() === ".shape" ) {
 			    if ( arg.data ) {
-				reply = id + ".shape[0]";
+				reply = id + ".shape[" + indx[1] + "]";
 			    } else {
-				reply = id + ".length";
+				reply = id + repeat("[0]", indx[1]) + ".length";
 			    } 
 			} else {
 			    reply = id + indx[0].trim();
@@ -213,30 +229,50 @@
 			if ( arg.data ) {
 			    dimen = arg.dimension;
 
-			    id = id + ".data";
-			    for ( i = 0; i < arg.dimension; i++ ) {
-				if ( arg.stride[i] !== 1 ) { indx[i] =  "(" + indx[i] + ")*" + arg.stride[i]; }
+
+			    if ( indx.length !== 0 && indx.length < arg.dimension ) {
+				id = id + ".data.subarray";
+				bracket = "()";
+				fixindx = indx.length;
+			    } else {
+				id = id + ".data";
+				bracket = "[]"
+				fixindx = arg.dimension;
 			    }
-			    if ( arg.offset !== 0 ) { 	offset = arg.offset + " + "; 
-			    } else {			offset = ""; }
 
 			    joinStr = " + ";
 			} else {
 			    dimen = arg.shape.length;
 			    joinStr = "][";
 			    offset  = ""
+			    bracket = "[]"
 			}
 
 			var indi = indicies.slice(6-dimen);
 
-			for ( i = 0; i < dimen; i++ ) {
-			    if ( indx[i] === undefined ) { indx[i] = indi[i]; } 
-			    if ( dims[i] === undefined ) { dims[i] = 0; }
+			if ( ( opts.loops === undefined || opts.loops == true ) && indx.length === 0 || dimen === indx.length ) {
+			    for ( i = 0; i < dimen; i++ ) {
+				if ( indx[i] === undefined ) { indx[i] = indi[i]; } 
+				if ( dims[i] === undefined ) { dims[i] = 0; }
 
-			    dims[i] = Math.max(dims[i], arg.shape[i]);
+				dims[i] = Math.max(dims[i], arg.shape[i]);
+			    }
 			}
 
-			reply = id + "[" + offset + indx.join(joinStr) + "] ";
+			if ( arg.data ) {
+			    for ( i = 0; i < fixindx; i++ ) {
+				if ( arg.stride[i] !== 1 ) { indx[i] =  "(" + indx[i] + ")*" + arg.stride[i]; }
+			    }
+
+			    if ( arg.offset !== 0 ) { 	offset = arg.offset + " + "; 
+			    } else {			offset = ""; }
+			}
+
+			if ( indx.length ) {
+			    reply = id + bracket[0] + offset + indx.join(joinStr) + bracket[1] + " ";
+			} else {
+			    reply = id;
+			}
 		    }
 		} else {
 		    if ( indx.length > 0 ) {
@@ -290,7 +326,7 @@
 	return this.cache[func].apply(undefined, arguments);
     }
 
-    var typed = function (opts, func) {
+    function typed(opts, func) {
 	if ( func === undefined ) {
 	    func = opts;
 	    opts = undefined;
@@ -298,10 +334,11 @@
 	return typedArrayFunctionConstructor.bind({ func: func, opts: opts });
     };
 
-    module.exports = typed;
-    module.exports.extend = extend;
-    module.exports.array  = array;
-    module.exports.dim    = dim;
+    module.exports         = typed;
+    module.exports.ndarray = ndarray;
+    module.exports.extend  = extend;
+    module.exports.array   = array;
+    module.exports.dim     = dim;
 
     var size = typed(function (a) {
 	var prd = 1;

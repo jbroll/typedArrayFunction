@@ -20,23 +20,23 @@ var b = ndarray(new Int32Array(size*size),   [size, size]);
 var c = ndarray(new Int32Array(size*size),   [size, size]);
 var d = ndarray(new Float32Array(size*size), [size, size]);
 
-var E = typed.array([10], Int32Array, 2);
-var F = typed.array([10], Int32Array, 5);
+var E = typed.array([3], Int32Array, 2);
+var F = typed.array([3], Int32Array, 5);
 
-var e = numeric.rep([10], 2)
-var f = numeric.rep([10], 5)
+var e = numeric.rep([3], 2)
+var f = numeric.rep([3], 5)
 
-console.log(numeric.dot(e, f));
-console.log(typed.dot(e, F));
-console.log(typed.dot(E, F));
+//console.log(numeric.tensor(e, f));
+//console.log(typed.tensor(e, f));
+//console.log(typed.tensor(E, F));
 
-//console.log(typed.dot(e, F));
+console.log(typed.dot(e, f));
 //console.log(typed.dot(E, f));
 
 process.exit(0);
 
 
-typed(function (a) { a[1][2]; })(a);
+//typed(function (a) { a[1][2]; })(a);
 
 
 //ndops.addseq(a, 1);

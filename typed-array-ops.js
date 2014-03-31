@@ -26,6 +26,7 @@
 
 	ops[opname + "s"]        = ops[opname];
 	ops[opname + "s" + "eq"] = ops[opname];
+
       }
 
 
@@ -119,6 +120,8 @@
 	return sup;
     });
 
+
+
 	//norm1
 	//norm2
 	//norminf
@@ -129,5 +132,6 @@
     ops.assign = typed(function (a, b) { a = b; });
     ops.equils = typed(function (a, b) { if ( a !== b ) { return false; } });
     ops.random = typed(function (a)    { a = Math.random(); });
+    ops.isFinite = typed(function (a) { if ( !isFinite(a) ) { return false; } });
 }());
  
