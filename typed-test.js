@@ -6,9 +6,12 @@
 
 var ndarray = require("ndarray");
 var ndops   = require("ndarray-ops");
-var tyops   = require("./ndarray-ops-typed");
+var numeric = require("./numeric-1.2.6");
 
-var typed   = require("./typedArrayFunction");
+var typed =                     require("./typed-array");
+var typed = typed.extend(typed, require("./typed-array-ops"));
+var typed = typed.extend(typed, require("./typed-matrix-ops"));
+
 
 var size = 2048;
 
@@ -17,14 +20,59 @@ var b = ndarray(new Int32Array(size*size),   [size, size]);
 var c = ndarray(new Int32Array(size*size),   [size, size]);
 var d = ndarray(new Float32Array(size*size), [size, size]);
 
+var E = typed.array([10], Int32Array, 2);
+var F = typed.array([10], Int32Array, 5);
+
+var e = numeric.rep([10], 2)
+var f = numeric.rep([10], 5)
+
+console.log(numeric.dot(e, f));
+console.log(typed.dot(e, F));
+console.log(typed.dot(E, F));
+
+//console.log(typed.dot(e, F));
+//console.log(typed.dot(E, f));
+
+process.exit(0);
+
+
+typed(function (a) { a[1][2]; })(a);
+
 
 //ndops.addseq(a, 1);
-//tyops.addeq(b, 1);
-//console.log(ndops.equals(a, b));
+//typed.addeq(b, 1);
+
+ndops.qcenter = typed(function (a) {
+	var max = Number.MIN_VALUE;
+	var idx = undefined;
+
+	// ---- // [1:-1][1:-1]
+	    var sum = a +
+		    + a[iY-1] [iX  ] 
+		    + a[iY-1][iX+1] 
+		    + a[iY  ][iX-1] 
+	    	    + a[iY  ][iX  ]
+		    + a[iY  ][iX+1] 
+		    + a[iY+1][iX-1] 
+		    + a[iY+1][iX  ] 
+		    + a[iY+1][iX+1];
+
+	    if ( max < sum ) {
+		max = sum;
+		idx = index.concat();
+	    }
+	// ----
+
+	return idx;
+})(a);
+
+console.log(ndops.equals(a, b));
+
+process.exit(0);
 
 
 for ( var i = 0; i < 1000; i++ ) {
-    tyops.cos(a, b, c);
-    tyops.add(a, b, d);
+    typed.cos(a, b, c);
+    typed.add(a, b, d);
 }
 
