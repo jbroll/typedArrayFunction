@@ -4,10 +4,6 @@ var numeric =                     require("../typed-array/typed-array");
     numeric = numeric.extend(numeric, require("../typed-array/typed-array-ops"));
     numeric = numeric.extend(numeric, require("../typed-array/typed-matrix-ops"));
 
-    numeric.clone = function ( x ) {
-	return numeric.assign(numeric.array(numeric.dim(x), x), x);
-    }
-
 //9. Unconstrained optimization
 exports.gradient = function gradient(f,x) {
     var n = x.length;
@@ -55,6 +51,10 @@ exports.uncmin = function uncmin(f,x0,tol,gradient,maxit,callback,options) {
     tol = max(tol,numeric.epsilon);
     var step,g0,g1,H1 = options.Hinv || numeric.identity(n);
     var dot = numeric.dot, sub = numeric.sub, add = numeric.add, ten = numeric.tensor, div = numeric.div, mul = numeric.mul;
+
+    var addVVV = numeric.add.baked([1], [1], [1]);
+    var mulVVS = numeric.mul.baked([1], [1], 1);
+
     var all = numeric.all, isfinite = numeric.isFinite, neg = numeric.negeq;
     var it=0,i,s,x1,y,Hy,Hs,ys,i0,t,nstep,t1,t2;
     var msg = "";
@@ -72,8 +72,8 @@ exports.uncmin = function uncmin(f,x0,tol,gradient,maxit,callback,options) {
         x1 = x0;
         while(it < maxit) {
             if(t*nstep < tol) { break; }
-            s = mul(step,t);
-            x1 = add(x0,s);
+            s  = mulVVS(step,t);
+            x1 = addVVV(x0,s);
             f1 = f(x1);
             if(f1-f0 >= 0.1*t*df0 || isNaN(f1)) {
                 t *= 0.5;

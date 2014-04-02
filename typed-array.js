@@ -18,6 +18,10 @@
 	  , float64: Float64Array
     };
 
+    function clone (x) {
+	return numeric.assign(numeric.array(numeric.dim(x), x), x);
+    }
+
     function iota(n) {
 	var result = new Array(n)
 	    for(var i=0; i<n; ++i) {
@@ -68,6 +72,42 @@
 	for(i=n-1;i>=0;i--) { ret[i] = rep(s,v,k+1); }
 	return ret;
     }
+    function print(a, width, prec) {
+	var x, y;
+	var line;
+
+	if ( width === undefined ) { width = 7; }
+	if ( prec === undefined  ) { prec  = 3; }
+
+	if ( a.shape.length === 1 ) {
+	    line = "";
+	    for (x=0;x<a.shape[0];++x) {
+		line += a.get(x).toFixed(prec) + " ";
+		//if ( x > 17 ) { break;}
+	    }
+	    console.log(line);
+	} else {
+	    for ( y = a.shape[0]-1; y >= 0; --y ) {
+	      line = "";
+	      for ( x = 0; x < a.shape[1]; ++x ) {
+		line += a.get(y, x).toFixed(prec) + " ";
+	      }
+
+	      console.log(line);
+	    }
+	    console.log("\n");
+	}
+    };
+
+    function section(a, sect) {
+	    var x1 = sect[0][0];
+	    var x2 = sect[0][1];
+	    var y1 = sect[1][0];
+	    var y2 = sect[1][1];
+
+	    return a.lo(y1, x1).hi(y2-y1, x2-x1);
+    };
+
 
     function array(shape, dtype, value) {
         var reply;
@@ -88,6 +128,8 @@
 	} else {
 	    reply = rep(shape, value);
 	}
+
+	reply.shape = shape;
 
 	return reply;
     }
@@ -202,15 +244,25 @@
 	//
 	var type = "";
 	var dime = 0
-	for ( i = 0; i < actuals.length; i++ ) {
 
-	    if ( typeof actuals[i] === "object" && !actuals[i].shape && (!opts.consider || opts.consider && opts.consider[args[i]] ) ) {
-		actuals[i].shape = dim(actuals[i]);
+	for ( i = 0; i < args.length; i++ ) {
+
+	    if ( typeof actuals[i] === "object" && (!opts.consider || opts.consider && opts.consider[args[i]] ) ) {
+		if ( !actuals[i].shape ) {
+		    actuals[i].shape = dim(actuals[i]);
+		}
+
+		dime = Math.max(actuals[i].shape.length, dime);
+
+		if ( actuals[i].data ) {
+		    type += " " + actuals[i].dtype + " " + actuals[i].offset + " " + " " + actuals[i].stride;
+		} else {
+		    type += " O";
+		}
+
+	    } else {
+		type += " X";
 	    }
-
-	    if ( actuals[i].shape ) { dime = Math.max(actuals[i].shape.length, dime); }
-
-	    type += " " + actuals[i].dtype; // + actuals[i].offset + " " + " " + actuals[i].stride;
        	}
 	type = dime + type;
 
@@ -221,7 +273,7 @@
 	    }
 	}
 
-	for ( i = 0; i < actuals.length; i++ ) {
+	for ( i = 0; i < args.length; i++ ) {
 	    hash[args[i]] = actuals[i];
 
 	    if ( typeof actuals[i] === "object" && !actuals[i].shape && (!opts.consider || opts.consider && opts.consider[args[i]] ) ) {
@@ -243,6 +295,7 @@
 	//
 	function replaceArrayRefs(text) {
 	    return replaceIdentifierRefs(text, function (id, indx) {
+		var ID = id;
 		var i, offset, reply;
 
 		for ( i = 0; i < indx.length; i++ ) {
@@ -310,7 +363,7 @@
 				if ( arg.stride[i] !== 1 ) { indx[i] =  "(" + indx[i] + ")*" + arg.stride[i]; }
 			    }
 
-			    if ( arg.offset !== 0 ) { 	offset = arg.offset + " + "; 
+			    if ( arg.offset !== 0 ) { 	offset = arg.offset + " + ";
 			    } else {			offset = ""; }
 			}
 
@@ -336,20 +389,17 @@
 	    });
 	}
 	var brak = body.match(/\/\/ *\[(.*)\]/);
-
-	body = replaceArrayRefs(body);
-	star = dims.map(function (x) { return 0; });
-
 	if ( brak !== null ) {
 	    brak = brak[1].replace(/\]\[/, " ").split(" ").map(function (x) { return x.split(":").map(function (n) { return parseInt(n, 10); }); });
-	    for ( i = 0; i < brak.length; i++ ) {
-		star[i] = brak[i][0];
-		dims[i] = brak[i][1] + dims[i];
-	    }
 	} else {
 	    brak = [];
 	}
 
+	body = replaceArrayRefs(body);
+	star = dims.map(function (x) { return 0; });
+
+
+	var indx = indicies.slice(6-dims.length);
 	var indi = indicies.slice(6-dims.length).reverse();
 	dims.reverse();
 
@@ -358,11 +408,11 @@
 	if ( opts.loops === undefined || opts.loops == true ) {
 	    for ( i = 0; i < dims.length; i++ ) {
 
-		init += "	var " + indi[i] + "star = 0;\n"
-		init += "	var " + indi[i] + "dims = 0;\n"
-		for ( j = 0; j < actuals.length; j++ ) {
-		    if ( actuals[i].shape ) {
-			init += "	" + indi[i] + "dims = Math.max(" + args[j] + ".shape[" + i + "], " + indi[i] + "dims);\n"
+		init += "	var " + indx[i] + "star = 0;\n"
+		init += "	var " + indx[i] + "dims = 0;\n"
+		for ( j = 0; j < args.length; j++ ) {
+		    if ( typeof actuals[j] === "object" && (!opts.consider || ( opts.consider && opts.consider[args[j]] )) ) {
+			init += "	" + indx[i] + "dims = Math.max(" + args[j] + ".shape[" + i + "], " + indx[i] + "dims);\n"
 		    }
 		}
 		if ( brak[i] ) {
@@ -384,7 +434,7 @@
 
 	if ( this.cache       === undefined ) { this.cache = {}; }
 	if ( this.cache[type] === undefined ) {
-	     console.log(func);
+	     if ( typed.debug ) { console.log(func); }
 	     func = new Function(func)();
 	     this.cache[type] = func;
 	}
@@ -414,8 +464,11 @@
 
     module.exports         = typed;
     module.exports.ndarray = ndarray;
+    module.exports.section = section;
     module.exports.extend  = extend;
     module.exports.array   = array;
+    module.exports.clone   = clone;
+    module.exports.print   = print;
     module.exports.dim     = dim;
 
     var size = typed(function (a) {

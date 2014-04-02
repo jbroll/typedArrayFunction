@@ -11,7 +11,7 @@ typed.dot = function dot(x,y) {
     var dimy = d(y);
 
     switch(d(x).length*1000+d(y).length) {
-	case 2002: return numeric.dotMMsmall(numeric.array([dimx[0], dimy[1]], x.dtype), x,y);
+	case 2002: return numeric.dotMM(numeric.array([dimx[0], dimy[1]], x.dtype), x,y);
 	case 2001: return numeric.dotMV(x,y);
 	case 1002: return numeric.dotVM(x,y);
 	case 1001: return numeric.dotVV(x,y);
@@ -57,7 +57,7 @@ numeric.dotVM = function dotVM(x,y) {
     return ret;
 }
 
-numeric.dotMMsmall = function dotMMsmall(reply,x,y) {
+numeric.dotMM = function dotMM(reply,x,y) {
     var i,j,k,p,q,r=reply.shape[1],foo,bar,woo,i0,k0,p0,r0;
 
     p = x.length; q = y.length
@@ -135,9 +135,9 @@ numeric.tensor   = function tensor(x,y) {
 };
 
 
-numeric.dotVV 	   = typed({ loops: false }, numeric.dotVV);
-numeric.dotVM 	   = typed({ loops: false }, numeric.dotVM);
-numeric.dotMV 	   = typed({ loops: false }, numeric.dotMV);
-numeric.dotMMsmall = typed({ loops: false }, numeric.dotMMsmall);
-numeric.diag       = typed({ loops: false }, numeric.diag);
+numeric.dotVV = typed({ loops: false }, numeric.dotVV);
+numeric.dotVM = typed({ loops: false }, numeric.dotVM);
+numeric.dotMV = typed({ loops: false }, numeric.dotMV);
+numeric.dotMM = typed({ loops: false }, numeric.dotMM);
+numeric.diag  = typed({ loops: false }, numeric.diag);
 

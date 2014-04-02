@@ -11,7 +11,7 @@
     var ops = {}, opname, op;
     module.exports = ops;
 
-    function twofourthr(ops) {
+    function twofourthr(ops) {				// Allocate an output array as needed
         var dima, dimb, shape;
 
 	return function (a, b, c) {
@@ -30,7 +30,7 @@
 	    return ops(a, b, c);
 	}
     }
-    function onefourtwo(ops) {
+    function onefourtwo(ops) {				// Allocate an output array as needed
 	return function (a, b) {
 	    if ( b === undefined ) { b = a; a = typed.array(typed.dim(b), b); }
 
@@ -133,7 +133,7 @@
       }
 
     ops.assign   = typed(function (a, b) { a = b; });
-    ops.equils   = typed(function (a, b) { if ( a !== b )   { return false; } });
+    ops.equals   = typed(function (a, b) { if ( a !== b )   { return false; } });
     ops.any      = typed(function (a) { if ( a )            { return true;  } });
     ops.all      = typed(function (a) { if (!a )            { return false; } });
     ops.random   = typed(function (a)    { a = Math.random(); });
@@ -166,7 +166,6 @@
 	// ----
 	return sup;
     });
-
 
 
     ops.norm2Squared = typed(function (a) {
