@@ -3,8 +3,6 @@
 var typed   = require("./typed-array");
 var numeric = typed;
 
-window.numeric = typed;
-
 
 typed.dot = function dot(x,y) {
     var d = numeric.dim;
@@ -25,34 +23,27 @@ typed.dot = function dot(x,y) {
 }
 
 numeric.dotVV = function dotVV(x,y) {
-    var i,n=x.shape[0],i1,ret = x[n-1]*y[n-1];
-
-    console.log(n, x[n-1], ret);
+    var i,n=x.length,i1,ret = x[n-1]*y[n-1];
 
     for(i=n-2;i>=1;i-=2) {
 	i1 = i-1;
 	ret += x[i]*y[i] + x[i1]*y[i1];
-
-    console.log(ret);
-
     }
     if(i===0) { ret += x[0]*y[0]; }
-
-    console.log(ret);
 
     return ret;
 }
 
 numeric.dotMV = function dotMV(x,y) {
-    var p = x.shape[0], q = y.shape[0],i;
-    var ret = numeric.array([p], x.dtype), dotVV = numeric.dotVV;
+    var p = x.length, q = y.length,i;
+    var ret = this.array([p], x.dtype), dotVV = this.dotVV;
     for(i=p-1;i>=0;i--) { ret[i] = dotVV(x[i],y); }
     return ret;
 }
 
 numeric.dotVM = function dotVM(x,y) {
     var i,j,k,p,q,r,ret,foo,bar,woo,i0,k0,p0,r0,s1,s2,s3,baz,accum;
-    p = x.shape[0]; q = y.shape[1];
+    p = x.length; q = y[0].length;
     ret = numeric.array([q], x.dtype);
     for(k=q-1;k>=0;k--) {
 	woo = x[p-1]*y[p-1][k];
@@ -69,7 +60,7 @@ numeric.dotVM = function dotVM(x,y) {
 numeric.dotMMsmall = function dotMMsmall(reply,x,y) {
     var i,j,k,p,q,r=reply.shape[1],foo,bar,woo,i0,k0,p0,r0;
 
-    p = x.shape[0]; q = y.shape[0]
+    p = x.length; q = y.length
     for(i=p-1;i>=0;i--) {
 	foo = reply[i];
 	bar = x[i];
@@ -88,7 +79,7 @@ numeric.dotMMsmall = function dotMMsmall(reply,x,y) {
 }
 
 numeric.diag = function diag(d) {
-    var i,i1,j,n = d.shape[0], A = numeric.array([n, n], d.dtype), Ai;
+    var i,i1,j,n = d.length, A = this.array([n, n], d.dtype), Ai;
     for(i=n-1;i>=0;i--) {
 	Ai = A[i];
 	i1 = i+2;
@@ -107,10 +98,11 @@ numeric.diag = function diag(d) {
     }
     return A;
 }
-numeric.identity = function identity(n, type) { return numeric.diag(numeric.array([n],type,1)); }
+numeric.identity = function identity(n, type) { return this.diag(this.array([n],type,1)); }
 
 numeric.tensorXX = function tensor(A,x,y) {
-    var m = A.shape[0], n = A.shape[1], Ai, i,j,xi;
+    var m = x.length, n = y.length, Ai, i,j,xi;
+
 
     for(i=m-1;i>=0;i--) {
 	Ai = A[i];
@@ -126,6 +118,8 @@ numeric.tensorXX = function tensor(A,x,y) {
 	}
 	while(j>=0) { Ai[j] = xi * y[j]; --j; }
     }
+
+    //console.log(x, y, A[0], A[1]);
 }
 numeric.tensorXX = typed({ loops: false }, numeric.tensorXX);
 numeric.tensor   = function tensor(x,y) {

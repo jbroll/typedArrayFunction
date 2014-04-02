@@ -14,7 +14,7 @@ exports.gradient = function gradient(f,x) {
     var f0 = f(x);
     if(isNaN(f0)) throw new Error('gradient: f(x) is a NaN!');
     var i,x0 = numeric.clone(x),f1,f2, J = Array(n);
-    var div = numeric.div, sub = numeric.sub,errest,roundoff,max = Math.max,eps = 1e-3,abs = Math.abs, min = Math.min;
+    var errest,roundoff,max = Math.max,eps = 1e-3,abs = Math.abs, min = Math.min;
     var t0,t1,t2,it=0,d1,d2,N;
     for(i=0;i<n;i++) {
         var h = max(1e-6*f0,1e-8);
@@ -46,7 +46,7 @@ exports.uncmin = function uncmin(f,x0,tol,gradient,maxit,callback,options) {
     if(typeof options === "undefined") { options = {}; }
     if(typeof tol === "undefined") { tol = 1e-8; }
     if(typeof gradient === "undefined") { gradient = function(x) { return grad(f,x); }; }
-    if(typeof maxit === "undefined") maxit = 1000;
+    if(typeof maxit === "undefined") maxit = 10000;
     x0 = numeric.clone(x0);
     var n = x0.length;
     var f0 = f(x0),f1,df0;
@@ -85,6 +85,7 @@ exports.uncmin = function uncmin(f,x0,tol,gradient,maxit,callback,options) {
         if(t*nstep < tol) { msg = "Line search step size smaller than tol"; break; }
         if(it === maxit) { msg = "maxit reached during line search"; break; }
         g1 = gradient(x1);
+
         y = sub(g1,g0);
         ys = dot(y,s);
         Hy = dot(H1,y);
@@ -97,6 +98,7 @@ exports.uncmin = function uncmin(f,x0,tol,gradient,maxit,callback,options) {
         f0 = f1;
         g0 = g1;
         ++it;
+
     }
     return {solution: x0, f: f0, gradient: g0, invHessian: H1, iterations:it, message: msg};
 }

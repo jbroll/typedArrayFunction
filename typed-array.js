@@ -73,15 +73,18 @@
         var reply;
 	var i, n;
 
+	if ( typeof value !== "number" ) {
+	    value = 0;
+	}
+
 	if ( dtype && dtype.dtype ) 	 { dtype = dtype.dtype;  }
 	if ( typeof dtype === "string" ) { dtype = types[dtype]; }
 
         if ( typeof dtype === "function" ) {
 	    n = size(shape);
 	    reply = ndarray(new dtype(n), shape);
-	    if ( typeof value === "number" ) {
-		for ( i = 0; i < n; i++ ) { reply.data[i] = value; }
-	    }
+
+	    for ( i = 0; i < n; i++ ) { reply.data[i] = value; }
 	} else {
 	    reply = rep(shape, value);
 	}
@@ -152,51 +155,88 @@
 
 
     function typedArrayFunctionConstructor() {
-        var i, text;
         var actuals = arguments;
-	var hash = {};
-	var star = [];
-	var dims = [];
-	var indicies = [ "iW", "iV", "iU", "iZ", "iY", "iX" ];
+	var i, j;
+	var args;
+	var text;
+	var hash = {}
 
-	if ( typeof this.func === "string" ) {
-	    text = this.func;
-	} else {
-	    text = this.func.toString();
-	}
+	var body;
+
+	if ( this.cache === undefined ) {
+	    if ( typeof this.func === "string" ) {
+		text = this.func;
+	    } else {
+		text = this.func.toString();
+	    }
+	    this.text = text;
+
+	    var x = text.match(/function [A-Za-z0-9_]*\(([^()]*)\)[^{]*{([^]*)}[^]*/);	// }
+
+	    args = x[1].split(",").map(function(s) { return s.trim(); });
+	    this.args = args;
+
+	    this.prep = "";
+	    this.post = "";
+
+	    body = x[2].split(/\/\/ ----+/);
+
+	    if ( body.length > 1 ) {
+		this.prep = body[0];
+		this.post = body[2];
+		this.body = body[1];
+	    } else {
+		this.body = body[0];
+		this.post = "\nreturn " + args[0] + ";";
+	    }
+	} 
+	args = this.args;
+	text = this.text;
 
 	var opts = this.opts;
 
 	if ( opts === undefined ) { opts = {} };
 
-	var x = text.match(/function [A-Za-z0-9_]*\(([^()]*)\)[^{]*{([^]*)}[^]*/);	// }
-
-	var args = x[1].split(",").map(function(s) { return s.trim(); });
-	var body = x[2].split(/\/\/ ----+/);
-	var prep = "", post = "";
-
-	if ( body.length > 1 ) {
-	    prep = body[0];
-	    post = body[2];
-	    body = body[1];
-	} else {
-	    body = body[0];
-	    post = "\nreturn " + args[0] + ";";
-	}
-
 	// Capture the function parameter names and place them in the 
 	// hash table with corrosponding real function arguments.
 	//
 	var type = "";
-	for ( i = 0; i < args.length; i++ ) {
-	    hash[args[i]] = actuals[i];
+	var dime = 0
+	for ( i = 0; i < actuals.length; i++ ) {
 
 	    if ( typeof actuals[i] === "object" && !actuals[i].shape && (!opts.consider || opts.consider && opts.consider[args[i]] ) ) {
 		actuals[i].shape = dim(actuals[i]);
 	    }
 
-	    type += "// var " + args[i] + " " + actuals[i].dtype + " " + actuals[i].offset + " " + actuals[i].shape + " " + actuals[i].stride + "\n";
+	    if ( actuals[i].shape ) { dime = Math.max(actuals[i].shape.length, dime); }
+
+	    type += " " + actuals[i].dtype; // + actuals[i].offset + " " + " " + actuals[i].stride;
        	}
+	type = dime + type;
+
+	if ( this.cache ) {
+	    func = this.cache[type]
+	    if ( func ) {
+		return func;
+	    }
+	}
+
+	for ( i = 0; i < actuals.length; i++ ) {
+	    hash[args[i]] = actuals[i];
+
+	    if ( typeof actuals[i] === "object" && !actuals[i].shape && (!opts.consider || opts.consider && opts.consider[args[i]] ) ) {
+		actuals[i].shape = dim(actuals[i]);
+	    }
+	}
+
+
+	var prep = this.prep;
+	var body = this.body;
+	var post = this.post;
+	var star = [];
+	var dims = [];
+
+	var indicies = [ "iW", "iV", "iU", "iZ", "iY", "iX" ];
 
 	// Match each source code identifier and any associated array indexing.  Extract
 	// the indicies and recursivly replace them also.
@@ -214,6 +254,12 @@
 		var joinStr, bracket, fixindx;
 
 		if ( arg && typeof arg === "object" && (!opts.consider || ( opts.consider && opts.consider[args[i]] )) ) {
+
+		    if ( indx.length >= 1 && indx[indx.length-1].trim() === ".length" ) {
+		        indx[0] = ".shape";
+			indx[1] = indx.length-1;
+			indx.length = 2;
+		    }
 
 		    if ( indx.length >= 1 && indx[0][0] === "." ) {
 		        if ( indx.length >= 2 && indx[0].trim() === ".shape" ) {
@@ -300,30 +346,57 @@
 		star[i] = brak[i][0];
 		dims[i] = brak[i][1] + dims[i];
 	    }
+	} else {
+	    brak = [];
 	}
 
 	var indi = indicies.slice(6-dims.length).reverse();
 	dims.reverse();
 
+	var init = "\n", j;
+
 	if ( opts.loops === undefined || opts.loops == true ) {
 	    for ( i = 0; i < dims.length; i++ ) {
-		body = "for ( var " + indi[i] + " = " + star[i] + "; " + indi[i] + " < " + dims[i] + "; " + indi[i] + "++ ) {\n    " + body + "\n    }";
+
+		init += "	var " + indi[i] + "star = 0;\n"
+		init += "	var " + indi[i] + "dims = 0;\n"
+		for ( j = 0; j < actuals.length; j++ ) {
+		    if ( actuals[i].shape ) {
+			init += "	" + indi[i] + "dims = Math.max(" + args[j] + ".shape[" + i + "], " + indi[i] + "dims);\n"
+		    }
+		}
+		if ( brak[i] ) {
+		    init += "	" + indi[i] + "star += " + brak[i][0] + ";\n"
+		    init += "	" + indi[i] + "dims += " + brak[i][1] + ";\n"
+		}
+		init += "\n"
+	    }
+	    for ( i = 0; i < dims.length; i++ ) {
+		body = "for ( var " + indi[i] + " = " + indi[i] + "star; " + indi[i] + " < " + indi[i] + "dims; " + indi[i] + "++ ) {\n    " + body + "\n    }";
 	    }
 	}
 
 	var func;
 
 	func  = "// Array optimized funciton\n";
-	func += type;
-	func += "return function (" + args.join(",") + ") {\n'use strict';\n\n" + prep + body + post + "\n}";
+	func += "// " + type + "\n";
+	func += "return function (" + args.join(",") + ") {\n'use strict';\n\n" + prep + init + body + post + "\n}";
 
 	if ( this.cache       === undefined ) { this.cache = {}; }
-	if ( this.cache[func] === undefined ) {
+	if ( this.cache[type] === undefined ) {
 	     console.log(func);
-	     this.cache[func] = new Function(func)();
+	     func = new Function(func)();
+	     this.cache[type] = func;
 	}
 
-	return this.cache[func].apply(undefined, arguments);
+	return func;
+    }
+
+
+    function typedArrayFunctionExecute() {
+	var func = typedArrayFunctionConstructor.apply(this, arguments);
+
+	return func.apply(typed, arguments);
     }
 
     function typed(opts, func) {
@@ -331,7 +404,12 @@
 	    func = opts;
 	    opts = undefined;
 	}
-	return typedArrayFunctionConstructor.bind({ func: func, opts: opts });
+	var objst = { func: func, opts: opts };
+	var reply = typedArrayFunctionExecute.bind(objst);
+
+	reply.baked = typedArrayFunctionConstructor.bind(objst);
+
+	return reply;
     };
 
     module.exports         = typed;
