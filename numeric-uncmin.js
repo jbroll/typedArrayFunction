@@ -52,8 +52,10 @@ exports.uncmin = function uncmin(f,x0,tol,gradient,maxit,callback,options) {
     var step,g0,g1,H1 = options.Hinv || numeric.identity(n);
     var dot = numeric.dot, sub = numeric.sub, add = numeric.add, ten = numeric.tensor, div = numeric.div, mul = numeric.mul;
 
-    var addVVV = numeric.add.baked([1], [1], [1]);
-    var mulVVS = numeric.mul.baked([1], [1], 1);
+    //var dotVV = numeric.dotVV.baked([1], [1]);
+
+    //var addVV = numeric.add.baked([1], [1]);
+    //var mulVS = numeric.mul.baked([1], 1);
 
     var all = numeric.all, isfinite = numeric.isFinite, neg = numeric.negeq;
     var it=0,i,s,x1,y,Hy,Hs,ys,i0,t,nstep,t1,t2;
@@ -72,8 +74,10 @@ exports.uncmin = function uncmin(f,x0,tol,gradient,maxit,callback,options) {
         x1 = x0;
         while(it < maxit) {
             if(t*nstep < tol) { break; }
-            s  = mulVVS(step,t);
-            x1 = addVVV(x0,s);
+
+            s  = mul(step,t);
+            x1 = add(x0,s);
+
             f1 = f(x1);
             if(f1-f0 >= 0.1*t*df0 || isNaN(f1)) {
                 t *= 0.5;
@@ -86,9 +90,10 @@ exports.uncmin = function uncmin(f,x0,tol,gradient,maxit,callback,options) {
         if(it === maxit) { msg = "maxit reached during line search"; break; }
         g1 = gradient(x1);
 
-        y = sub(g1,g0);
+        y  = sub(g1,g0);
         ys = dot(y,s);
         Hy = dot(H1,y);
+
         H1 = sub(add(H1,
                 mul(
                         (ys+dot(y,Hy))/(ys*ys),

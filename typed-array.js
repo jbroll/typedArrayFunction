@@ -19,7 +19,7 @@
     };
 
     function clone (x) {
-	return numeric.assign(numeric.array(numeric.dim(x), x), x);
+	return typed.assign(typed.array(typed.dim(x), x), x);
     }
 
     function iota(n) {
@@ -470,6 +470,8 @@
     module.exports.clone   = clone;
     module.exports.print   = print;
     module.exports.dim     = dim;
+
+    module.exports.epsilon = 2.220446049250313e-16;
 
     var size = typed(function (a) {
 	var prd = 1;
