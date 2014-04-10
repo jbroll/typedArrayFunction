@@ -306,7 +306,7 @@
 		var dimen;
 		var joinStr, bracket, fixindx;
 
-		if ( arg && typeof arg === "object" && (!opts.consider || ( opts.consider && opts.consider[args[i]] )) ) {
+		if ( arg && typeof arg === "object" && (!opts.consider || ( opts.consider && opts.consider[id] )) ) {
 
 		    if ( indx.length >= 1 && indx[indx.length-1].trim() === ".length" ) {
 		        indx[0] = ".shape";
