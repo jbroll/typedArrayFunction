@@ -42,7 +42,7 @@ exports.uncmin = function uncmin(f,x0,tol,gradient,maxit,callback,options) {
     if(typeof options === "undefined") { options = {}; }
     if(typeof tol === "undefined") { tol = 1e-8; }
     if(typeof gradient === "undefined") { gradient = function(x) { return grad(f,x); }; }
-    if(typeof maxit === "undefined") maxit = 10000;
+    if(typeof maxit === "undefined") maxit = 1000;
     x0 = numeric.clone(x0);
     var n = x0.length;
     var f0 = f(x0),f1,df0;
@@ -52,7 +52,7 @@ exports.uncmin = function uncmin(f,x0,tol,gradient,maxit,callback,options) {
     var step,g0,g1,H1 = options.Hinv || numeric.identity(n);
     var dot = numeric.dot, sub = numeric.sub, add = numeric.add, ten = numeric.tensor, div = numeric.div, mul = numeric.mul;
 
-    var all = numeric.all, isfinite = numeric.isFinite, neg = numeric.negeq;
+    var all = numeric.all, isfinite = numeric.isFinite, neg = numeric.neg;
     var it=0,i,s,x1,y,Hy,Hs,ys,i0,t,nstep,t1,t2;
     var msg = "";
     g0 = gradient(x0);
