@@ -1,0 +1,28 @@
+{
+  "name": "typed-array-function",
+  "version": "0.1.4",
+  "description": "Typed-array-function allows the simple creation of element wise function operators for javascript TypedArray data.",
+  "main": "typed-array-function.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "homepage": "https://github.com/jbroll/typedArrayFunction",
+  "repository": {
+    "type": "git",
+    "url": " git://github.com/jbroll/typedArrayFunction.git"
+  },
+  "keywords": [
+    "ndarray",
+    "numeric",
+    "scientific",
+    "computing",
+    "image",
+    "array",
+    "typed",
+    "math"
+  ],
+  "author": "john@cfa.harvard.edu",
+  "license": "MIT"
+}

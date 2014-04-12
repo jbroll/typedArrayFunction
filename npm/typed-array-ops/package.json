@@ -1,0 +1,31 @@
+{
+  "name": "typed-array-ops",
+  "version": "0.1.0",
+  "description": "Element wise operator functions for ndarray data.",
+  "main": "typed-array-ops.js",
+  "dependencies": {
+	"typed-array-function": ""
+   },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "homepage": "https://github.com/jbroll/typedArrayFunction/typed-array-ops.md",
+  "repository": {
+    "type": "git",
+    "url": " git://github.com/jbroll/typedArrayFunction.git"
+  },
+  "keywords": [
+    "typed-array-function",
+    "ndarray",
+    "numeric",
+    "scientific",
+    "computing",
+    "image",
+    "array",
+    "typed",
+    "math"
+  ],
+  "author": "john@cfa.harvard.edu",
+  "license": "MIT"
+}
