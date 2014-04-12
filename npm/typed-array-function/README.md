@@ -17,7 +17,7 @@ objects.
 install using npm
 
 ```bash
-npm install typed-array
+npm install typed-array-function
 ```
 
 Create an operator:
