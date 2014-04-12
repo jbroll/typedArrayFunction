@@ -1,16 +1,16 @@
 {
   "name": "typed-array-ops",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Element wise operator functions for ndarray data.",
   "main": "typed-array-ops.js",
   "dependencies": {
-	"typed-array-function": ""
-   },
+    "typed-array-function": ""
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "homepage": "https://github.com/jbroll/typedArrayFunction/typed-array-ops.md",
+  "homepage": "https://github.com/jbroll/typedArrayFunction/blob/master/typed-array-ops.md",
   "repository": {
     "type": "git",
     "url": " git://github.com/jbroll/typedArrayFunction.git"
