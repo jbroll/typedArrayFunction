@@ -1,6 +1,6 @@
 {
   "name": "typed-array-function",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "Typed-array-function allows the simple creation of element wise function operators for javascript TypedArray data.",
   "main": "typed-array-function.js",
   "dependencies": {},
@@ -8,7 +8,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "homepage": "https://github.com/jbroll/typedArrayFunction/blob/master/npm/typed-array-function.md",
+  "homepage": "https://github.com/jbroll/typedArrayFunction/blob/master/npm/typed-array-function/README.md",
   "repository": {
     "type": "git",
     "url": " git://github.com/jbroll/typedArrayFunction.git"
