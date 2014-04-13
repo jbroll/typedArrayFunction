@@ -23,7 +23,7 @@ npm install typed-array-function
 Create an operator:
 
 ```javascript
-var typed = require("typed-array");
+var typed = require("typed-array-function");
 
 var addeq = typed("function (a, b) { a += b; }");
 
