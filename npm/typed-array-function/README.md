@@ -118,7 +118,8 @@ var rms = typed(function (a) {
 Compute the index of the maximum element of an array:
 
 ```
-  This example is harder in typed-array-function than in cwise because the current index is replresented as descrete variables and not an array.  I'll have to fix this.
+  This example is harder in typed-array-function than in cwise because the current index is
+  represented as descrete variables and not an array.  I'll have to fix this.
 ```
 
 
