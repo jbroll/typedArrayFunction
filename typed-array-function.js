@@ -191,7 +191,6 @@
 	    i = 0;
 	}
 
-
 	return reply + str.substr(i);
     }
 
@@ -229,6 +228,8 @@
 		this.body = body[1];
 	    } else {
 		this.body = body[0];
+	    }
+	    if ( this.post === "" || this.post === undefined ) {
 		this.post = "\nreturn " + args[0] + ";";
 	    }
 	} 
