@@ -23,15 +23,15 @@ npm install typed-array-function
 Create an operator:
 
 ```javascript
-    var typed = require("typed-array");
+var typed = require("typed-array");
 
-    var addeq = typed("function (a, b) { a += b; }");
+var addeq = typed("function (a, b) { a += b; }");
 
-    var X = typed.ndarray(new Float32Array(128*128), [128,128])
-    var Y = typed.ndarray(new Float32Array(128*128), [128,128])
+var X = typed.ndarray(new Float32Array(128*128), [128,128])
+var Y = typed.ndarray(new Float32Array(128*128), [128,128])
 
-    //Add them together
-    addeq(X, Y)
+//Add them together
+addeq(X, Y)
 ```
 
 **Typed-array Function Notation**
@@ -55,52 +55,52 @@ Create an operator:
 Multiply an array by a value (could be a scaler or another array).
 
 ```javascript
-    var mul = typed("function(a, x) { a *= x; });
+var mul = typed("function(a, x) { a *= x; });
 ```
 
 Initialize an array with with the last index, this is an inconpatible difference with cwise.
 
 ```javascript
-    var mgrid = typed("function(a) { a = iX; }");
+var mgrid = typed("function(a) { a = iX; }");
 ```
 
 
 Check if any element is set.
 
 ```javascript
-    var any = typed(function (a) { if(a) { return true; });
+var any = typed(function (a) { if(a) { return true; });
 ```
 
 Compute the sum of all the elements in an array.
 
 ```javascript
-    sum  = typed(function (a) {
-        var sum = 0;
-        // ----
-            sum += a;
-        // ----
-        return sum;
-    });
+var sum  = typed(function (a) {
+    var sum = 0;
+    // ----
+	sum += a;
+    // ----
+    return sum;
+});
 ```
   
 
 Create a function to fill each element of the array with the return value of a function.  The current indicies are passed as arguments.
 
 ```javascript
-    var fill = typed(function (a, func) {
+var fill = typed(function (a, func) {
     var iX = 0, iY = 0, iZ = 0, iU = 0, iV = 0, iW = 0;
     // ----
 	    a = func(iX, iY, iZ, iU, iV, iW);
     // ----
     return a;
-    });
+});
 ```
 
 
 Compute the RMS of the values in an array.
 
 ```javascript
-    rms = typed(function (a) {
+var rms = typed(function (a) {
     var sum = 0;
     var squ = 0;
     // ----
@@ -111,7 +111,7 @@ Compute the RMS of the values in an array.
     var mean = sum/a.size;
 
     return Math.sqrt((squ - 2*mean*sum + a.size*mean*mean)/(a.size-1));
-    });
+});
 ```
 
 
