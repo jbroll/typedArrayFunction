@@ -22,17 +22,17 @@ npm install typed-array-function
 
 Create an operator:
 
-	```javascript
-	var typed = require("typed-array");
+```javascript
+    var typed = require("typed-array");
 
-	var addeq = typed("function (a, b) { a += b; }");
+    var addeq = typed("function (a, b) { a += b; }");
 
-	var X = typed.ndarray(new Float32Array(128*128), [128,128])
-	var Y = typed.ndarray(new Float32Array(128*128), [128,128])
+    var X = typed.ndarray(new Float32Array(128*128), [128,128])
+    var Y = typed.ndarray(new Float32Array(128*128), [128,128])
 
-	//Add them together
-	addeq(X, Y)
-	```
+    //Add them together
+    addeq(X, Y)
+```
 
 **Typed-array Function Notation**
 
@@ -54,26 +54,26 @@ Create an operator:
 
 Multiply an array by a value (could be a scaler or another array).
 
-	```javascript
-	var mul = typed("function(a, x) { a *= x; });
-	```
+```javascript
+    var mul = typed("function(a, x) { a *= x; });
+```
 
 Initialize an array with with the last index, this is an inconpatible difference with cwise.
 
-	```javascript
-	var mgrid = typed("function(a) { a = iX; }");
-	```
+```javascript
+    var mgrid = typed("function(a) { a = iX; }");
+```
 
 
 Check if any element is set.
 
-	```javascript
-	var any = typed(function (a) { if(a) { return true; });
-	```
+```javascript
+    var any = typed(function (a) { if(a) { return true; });
+```
 
 Compute the sum of all the elements in an array.
 
-	```javascript
+```javascript
     sum  = typed(function (a) {
         var sum = 0;
         // ----
@@ -81,7 +81,7 @@ Compute the sum of all the elements in an array.
         // ----
         return sum;
     });
-	```
+```
   
 
 Create a function to fill each element of the array with the return value of a function.  The current indicies are passed as arguments.
