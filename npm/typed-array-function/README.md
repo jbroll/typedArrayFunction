@@ -86,33 +86,33 @@ Compute the sum of all the elements in an array.
 
 Create a function to fill each element of the array with the return value of a function.  The current indicies are passed as arguments.
 
-	```javascript
-	var fill = typed(function (a, func) {
-    	var iX = 0, iY = 0, iZ = 0, iU = 0, iV = 0, iW = 0;
-    	// ----
-        	a = func(iX, iY, iZ, iU, iV, iW);
-    	// ----
-    	return a;
-	});
-	```
+```javascript
+    var fill = typed(function (a, func) {
+    var iX = 0, iY = 0, iZ = 0, iU = 0, iV = 0, iW = 0;
+    // ----
+	    a = func(iX, iY, iZ, iU, iV, iW);
+    // ----
+    return a;
+    });
+```
 
 
 Compute the RMS of the values in an array.
 
-	```javascript
-	rms = typed(function (a) {
-    	var sum = 0;
-    	var squ = 0;
-    	// ----
-        	sum +=   a;
-        	squ += a*a;
-    	// ----
+```javascript
+    rms = typed(function (a) {
+    var sum = 0;
+    var squ = 0;
+    // ----
+	    sum +=   a;
+	    squ += a*a;
+    // ----
 
-    	var mean = sum/a.size;
+    var mean = sum/a.size;
 
-    	return Math.sqrt((squ - 2*mean*sum + a.size*mean*mean)/(a.size-1));
-	});
-	```
+    return Math.sqrt((squ - 2*mean*sum + a.size*mean*mean)/(a.size-1));
+    });
+```
 
 
 Compute the index of the maximum element of an array:
