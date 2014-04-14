@@ -1,12 +1,12 @@
 {
   "name": "numeric-uncmin",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Port of Numeric Javascript unconstrained minimization to typed-matrix-ops/typed-array-ops",
   "main": "numeric-uncmin.js",
   "dependencies": {
     "typed-array-function": "*",
-    "typed-array-ops":      "*",
-    "typed-matrix-ops":     "*"
+    "typed-array-ops": "*",
+    "typed-matrix-ops": "*"
   },
   "devDependencies": {},
   "scripts": {
