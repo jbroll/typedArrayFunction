@@ -1,0 +1,32 @@
+{
+  "name": "typed-array-rotate",
+  "version": "0.1.3",
+  "description": "Rotate a data array",
+  "main": "typed-array-rotate.js",
+  "dependencies": {
+    "typed-array-warp": "*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "homepage": "https://github.com/jbroll/typedArrayFunction/blob/master/npm/typed-array-rotate",
+  "repository": {
+    "type": "git",
+    "url": " git://github.com/jbroll/typedArrayFunction.git"
+  },
+  "keywords": [
+    "typed-array-function",
+    "rotate",
+    "ndarray",
+    "numeric",
+    "scientific",
+    "computing",
+    "image",
+    "array",
+    "typed",
+    "math"
+  ],
+  "author": "john@cfa.harvard.edu",
+  "license": "MIT"
+}

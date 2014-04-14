@@ -1,0 +1,33 @@
+{
+  "name": "typed-array-warp",
+  "version": "0.1.1",
+  "description": "Warp a data array",
+  "main": "typed-array-warp.js",
+  "dependencies": {
+    "ndarray-linear-interpolate": "*",
+    "typed-array-function": "*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "homepage": "https://github.com/jbroll/typedArrayFunction/blob/master/npm/typed-array-warp",
+  "repository": {
+    "type": "git",
+    "url": " git://github.com/jbroll/typedArrayFunction.git"
+  },
+  "keywords": [
+    "typed-array-function",
+    "warp",
+    "ndarray",
+    "numeric",
+    "scientific",
+    "computing",
+    "image",
+    "array",
+    "typed",
+    "math"
+  ],
+  "author": "john@cfa.harvard.edu",
+  "license": "MIT"
+}
