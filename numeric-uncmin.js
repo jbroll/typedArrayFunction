@@ -1,8 +1,8 @@
 
 
-var numeric =                     require("../typed-array/typed-array");
-    numeric = numeric.extend(numeric, require("../typed-array/typed-array-ops"));
-    numeric = numeric.extend(numeric, require("../typed-array/typed-matrix-ops"));
+var numeric =                         require("typed-array-function");
+    numeric = numeric.extend(numeric, require("typed-array-ops"));
+    numeric = numeric.extend(numeric, require("typed-matrix-ops"));
 
 //9. Unconstrained optimization
 exports.gradient = function gradient(f,x) {
