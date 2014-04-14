@@ -8,6 +8,17 @@ npm:
 npm-test:
 	npm install ndarray-ops
 
-publish:
-	cp typed-array-function.js npm/typed-array-function/typed-array-function.js; cd npm/typed-array-function; npm version patch; npm publish
-	cp typed-array-ops.js           npm/typed-array-ops/typed-array-ops.js;      cd npm/typed-array-ops;      npm version patch; npm publish
+publish-typed-array-function: npm/typed-array-function/typed-array-function.js
+
+npm/$(PUBLISH_TARGET)/$(PUBLISH_TARGET).js : $(PUBLISH_TARGET).js
+	cp $(PUBLISH_TARGET).js npm/$(PUBLISH_TARGET)/$(PUBLISH_TARGET).js
+	cd npm/$(PUBLISH_TARGET); npm version patch; npm publish
+	git commit -a -m "publish $(PUBLISH_TARGET); git push
+
+publish-target: npm/$(PUBLISH_TARGET)/$(PUBLISH_TARGET).js
+	
+publish: 
+	$(MAKE) PUBLISH_TARGET=typed-array-function 	publish-target
+	$(MAKE) PUBLISH_TARGET=typed-array-ops 		publish-target
+	$(MAKE) PUBLISH_TARGET=typed-matrix-ops 	publish-target
+	$(MAKE) PUBLISH_TARGET=numeric-uncmin		publish-target
