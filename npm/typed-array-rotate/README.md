@@ -1,7 +1,7 @@
 
 **Typed Array Rotate**
 
-This is image-rotate ported to typed-array-function
+This is [image-rotate](https://www.npmjs.org/package/image-rotate) ported to typed-array-function
 
 
 **Install*
