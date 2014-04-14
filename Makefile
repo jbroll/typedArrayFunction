@@ -20,5 +20,7 @@ publish-target: npm/$(PUBLISH_TARGET)/$(PUBLISH_TARGET).js
 publish: 
 	$(MAKE) PUBLISH_TARGET=typed-array-function 	publish-target
 	$(MAKE) PUBLISH_TARGET=typed-array-ops 		publish-target
+	$(MAKE) PUBLISH_TARGET=typed-array-rotate 	publish-target
+	$(MAKE) PUBLISH_TARGET=typed-array-warp 	publish-target
 	$(MAKE) PUBLISH_TARGET=typed-matrix-ops 	publish-target
 	$(MAKE) PUBLISH_TARGET=numeric-uncmin		publish-target
