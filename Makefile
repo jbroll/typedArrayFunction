@@ -2,8 +2,14 @@
 test: 
 	nodeunit typed-test.js
 
-npm:
+npm-install:
 	npm install ndarray
+	npm install numeric
+	npm install typed-array-function
+	npm install typed-array-ops
+	npm install typed-array-rotate
+	npm install typed-matrix-ops
+	npm install typed-numeric-uncmin
 
 npm-test:
 	npm install ndarray-ops
@@ -27,4 +33,4 @@ publish:
 	$(MAKE) PUBLISH_TARGET=typed-array-rotate 	publish-target
 	$(MAKE) PUBLISH_TARGET=typed-array-warp 	publish-target
 	$(MAKE) PUBLISH_TARGET=typed-matrix-ops 	publish-target
-	$(MAKE) PUBLISH_TARGET=numeric-uncmin		publish-target
+	$(MAKE) PUBLISH_TARGET=typed-numeric-uncmin	publish-target

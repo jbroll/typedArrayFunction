@@ -11,7 +11,7 @@ var assert = require('nodeunit').assert;
 
 var ndarray = require("ndarray");
 var ndops   = require("ndarray-ops");
-var numeric = require("./numeric-1.2.6");
+var numeric = require("numeric");
 
 var typed =                     require("typed-array-function");
 var typed = typed.extend(typed, require("typed-array-ops"));
