@@ -6,7 +6,7 @@
 
 (function () {
     var i;
-    var typed = require("./typed-array");
+    var typed = require("./typed-array-function");
 
     var ops = {}, opname, op;
     module.exports = ops;

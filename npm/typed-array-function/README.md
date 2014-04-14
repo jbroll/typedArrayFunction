@@ -1,8 +1,8 @@
 
 **N Dimensional Array Function Generator**
  
-The typed-array module allows the simple creation of element wise function
-operators for javascript TypedArray data.  It used the
+The typed-array-function module allows the simple creation of element wise function
+operators for javascript TypedArray data.  It uses the
 [ndarray](https://github.com/mikolalysenko/ndarray "") data representaion and
 performs a role similar to the [cwise](https://github.com/mikolalysenko/cwise "")
 function generator.  It has a less complex "mini langauge" notation
@@ -10,7 +10,7 @@ than cwise and allows direct interoperatibility with the array of array data
 type of numeric.
 
 Typed-array was written to allow computation on scientific image data to be
-done in javascript.  The typed-array module is written to work with ndarray
+done in javascript.  It is written to work with ndarray and array of array data
 objects.
 
 
@@ -145,6 +145,12 @@ Numeric Javascript comes with a bunch of utility funcitons that are nice to have
  * dim(x)	- Return the shape of an n dimensional array.
  * rep(s, v)	- Return an Array of Arrays n dimensional array of shape s initialised to v.
  * array(s, t, v)	- Return an n dimensional array of shape s, data type t initialised to value v.  Type t maybe an existing ndarray, one of the javascript TypeArray data types or undefined.  The default type is the Array of Array type.
+
+ These functions are added as menbers of the main typed function.  For example:
+
+```javascript
+var copy = typed.clone(x);
+```
 
 
 **Is it fast?**
