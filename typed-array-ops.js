@@ -54,12 +54,9 @@
 
 	ops[opname] = twofourthr(ops[opname + "3"]);
 	ops[opname].baked = function (op) {
-	    return function(a, b, c) { 
-		if ( c === undefined ) {
-		    return twofourthr(op.baked(a, b, c));
-		} else {
-			return op.baked(a, b, c);
-		}
+	    return function(a, b, c) {
+		if ( c === undefined )  { return twofourthr(op.baked(a, b, c)); 
+		} else			{ return op.baked(a, b, c); }
 	    }
 	}(ops[opname + "3"]);
 
