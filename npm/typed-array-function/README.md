@@ -113,9 +113,26 @@ var rms = typed(function (a) {
 
 Compute the index of the maximum element of an array:
 
-```
-  This example is harder in typed-array-function than in cwise because the current index is
-  represented as descrete variables and not an array.  I'll have to fix this.
+```javascript
+var argmin = typed(function (a) {
+	var min_value = Number.POSITIVE_INFINITY;
+	var min_index = index.slice(0);
+
+	// ----
+	    if ( a < min_value ) {
+		min_value = a;
+
+		for(var i=0; i<index.length; ++i) {
+		    min_index[i] = index[i];
+		}
+	    }
+	// ----
+
+	return min_index;
+});
+
+//Usage:
+argmin(X)
 ```
 
 
