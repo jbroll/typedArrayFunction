@@ -42,13 +42,15 @@ addeq(X, Y)
   * The second section is enclosed in the element wise loops.
   * The third section is the post code.  If no third section is supplied the function's first argument is returned.
 
-  * The indicies of the element wise loop are hard coded.
+  * The indicies of the element wise loop are accessed via dedicated variables.
     * iX - innermost loop.
     * iY - 2nd dimension loop.
     * iZ - 3rd dimension loop.
     * iU - 4th dimension loop.
     * iV - 5th dimension loop.
     * iW - 6th dimension loop.
+
+  * Or via an array named "index".
 
 **More Examples**
 
@@ -87,13 +89,7 @@ var sum  = typed(function (a) {
 Create a function to fill each element of the array with the return value of a function.  The current indicies are passed as arguments.
 
 ```javascript
-var fill = typed(function (a, func) {
-    var iX = 0, iY = 0, iZ = 0, iU = 0, iV = 0, iW = 0;
-    // ----
-	    a = func(iX, iY, iZ, iU, iV, iW);
-    // ----
-    return a;
-});
+var fill = typed(function (a, func) { a = func.apply(undefined, index); });
 ```
 
 
@@ -132,9 +128,6 @@ function that will be called multple time from a particular context are fixed,
 the function can be pre generated and saved in a local variable.  I've called this
 process "baking".
 
-**Three Address Funcitons**
-
-The ndarray cwise package supplies 3 address funcitons (where the first argument recieves the result of the operation on the other args), but Numeric Javascript normally allocates a new result value with the same shape as the funciton args.  Typed-array-funciton supports this behavior, but it is very time consuming and Numeric Javascript code can be improved by using non-allocating 3 argument functions provided by the typed-array-funciton package.
 
 **Numeric Javascript Support Functions**
 
