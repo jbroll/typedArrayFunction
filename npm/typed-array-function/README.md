@@ -146,6 +146,12 @@ Numeric Javascript comes with a bunch of utility funcitons that are nice to have
  * rep(s, v)	- Return an Array of Arrays n dimensional array of shape s initialised to v.
  * array(s, t, v)	- Return an n dimensional array of shape s, data type t initialised to value v.  Type t maybe an existing ndarray, one of the javascript TypeArray data types or undefined.  The default type is the Array of Array type.
 
+ These functions are added as menbers of the main typed function.  For example:
+
+```javascript
+var copy = typed.clone(x);
+```
+
 
 **Is it fast?**
 

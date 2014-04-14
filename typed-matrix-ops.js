@@ -1,6 +1,6 @@
 
 
-var typed   = require("./typed-array");
+var typed   = require("./typed-array-function");
 var numeric = typed;
 
 

@@ -1,9 +1,11 @@
 {
   "name": "typed-array-function",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "description": "Typed-array-function allows the simple creation of element wise function operators for javascript TypedArray data.",
   "main": "typed-array-function.js",
-  "dependencies": { "ndarray": "*" },
+  "dependencies": {
+    "ndarray": "*"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
