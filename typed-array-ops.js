@@ -61,6 +61,27 @@
 	ops[opname + "seq"] = ops[opname + "eq"];
       }
 
+    var binary_ops = { and: "&&", or: "||",
+		       eq: "===", neq: "!==", lt: "<",
+		       gt: ">", leq: "<=", geq: ">=" };
+
+      for(opname in binary_ops) {
+	op = binary_ops[opname];
+
+	ops[opname + "3"]            = typed("function (a, b, c)    {            a = b " + op + " c; }");
+	ops[opname + "_mask"]        = typed("function (a, b, c, m) { if ( m ) { a = b " + op + " c; } }");
+	ops[opname + "eq"]           = typed("function (a, b   )    {            a = a " + op + " b; }  ");
+	ops[opname + "eq_mask"]      = typed("function (a, b   , m) { if ( m ) { a = a " + op + " b; } }");
+
+	ops[opname] = twofourthr(ops[opname + "3"]);
+	ops[opname].baked = function (ops) {
+	    return function(a, b, c) { return twofourthr(ops.baked(a, b, c)); }
+	}(ops[opname + "3"]);
+
+	ops[opname + "s"]   = ops[opname];
+	ops[opname + "seq"] = ops[opname + "eq"];
+      }
+
 
     var unary_ops = { not: "!", bnot: "~", neg: "-", recip: "1.0/" };
 
@@ -73,25 +94,11 @@
 	ops[opname + "eq" + "_mask"] = typed("function (a      , m) { if ( m ) { a = " + op + " a; } }");
 
 	ops[opname] = onefourtwo(ops[opname + "2"]);
-
-	ops[opname + "s"]        = ops[opname];
-	ops[opname + "s" + "eq"] = ops[opname];
+	ops[opname].baked = function (ops) {
+	    return function(a, b, c) { return onefourtwo(ops.baked(a, b, c)); }
+	}(ops[opname + "2"]);
       }
 
-
-    var binary_ops = { and: "&&", or: "||",
-		       eq: "===", neq: "!==", lt: "<",
-		       gt: ">", leq: "<=", geq: ">=" };
-
-      for(opname in binary_ops) {
-	op = binary_ops[opname];
-
-	ops[opname + "3"]            = typed("function (a, b, c)    {            a = b " + op + " c; }");
-	ops[opname + "_mask"]        = typed("function (a, b, c, m) { if ( m ) { a = b " + op + " c; } }");
-
-	ops[opname] = twofourthr(ops[opname + "3"]);
-      }
-	    
     var math_unary = [ "Math.abs", "Math.exp", "Math.floor", "Math.log", "Math.round", "Math.sqrt"
 		    , "Math.acos", "Math.asin", "Math.atan", "Math.ceil", "Math.cos", "Math.sin", "Math.tan"
 		    , "isFinite", "isNaN" ]; 
@@ -105,12 +112,12 @@
 	ops[opname + "eq" + "_mask"] = typed("function (a      , m) { if ( m ) { a = " + op + "(a); } }");
 
 	ops[opname] = onefourtwo(ops[opname + "2"]);
-
-	ops[opname + "s"]        = ops[opname];
-	ops[opname + "s" + "eq"] = ops[opname];
+	ops[opname].baked = function (ops) {
+	    return function(a, b, c) { return onefourtwo(ops.baked(a, b, c)); }
+	}(ops[opname + "2"]);
       }
 
-    var math_comm = [ "max", "min", "atan2", "pow" ];
+    var math_comm = [ "max", "min" ];
 
       for( i = 0; i < math_comm.length; i++ ) {
 	opname = op = math_comm[i];
@@ -119,6 +126,12 @@
 	ops[opname + "_mask"]        = typed("function (a, b, c, m) { if ( m ) { a = Math." + op + "(b, c); } }");
 
 	ops[opname] = twofourthr(ops[opname + "3"]);
+	ops[opname].baked = function (ops) {
+	    return function(a, b, c) { return twofourthr(ops.baked(a, b, c)); }
+	}(ops[opname + "3"]);
+
+	ops[opname + "s"]        = ops[opname];
+	ops[opname + "s" + "eq"] = ops[opname];
       }
 
     var math_noncomm = [ "atan2", "pow" ];
@@ -130,6 +143,12 @@
 	ops[opname + "_mask"]        = typed("function (a, b, c, m) { if ( m ) { a = Math." + op + "(b, c); } }");
 
 	ops[opname] = twofourthr(ops[opname + "3"]);
+	ops[opname].baked = function (ops) {
+	    return function(a, b, c) { return twofourthr(ops.baked(a, b, c)); }
+	}(ops[opname + "3"]);
+
+	ops[opname + "s"]        = ops[opname];
+	ops[opname + "s" + "eq"] = ops[opname];
       }
 
     ops.assign   = typed(function (a, b) { a = b; });
