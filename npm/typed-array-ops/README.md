@@ -36,10 +36,7 @@ typed.mulseq(a, 0.5)
 //Print some statistics about a:
 console.log(
   "inf(a) = ", ops.inf(a),
-  "sup(a) = ", ops.sup(a),
-  "argmin(a) = ", ops.argmin(a),
-  "argmax(a) = ", ops.argmax(a),
-  "norm1(a) = ", ops.norm1(a))
+  "sup(a) = ", ops.sup(a))
 ```
 
 **Conventions**
