@@ -1,8 +1,8 @@
 {
-  "name": "typed-array-ops",
-  "version": "0.1.11",
-  "description": "Element wise operator functions for ndarray data.",
-  "main": "typed-array-ops.js",
+  "name": "typed-matrix-ops",
+  "version": "0.1.1",
+  "description": "Numeric Javascript matrix operators ported to typed-array-function",
+  "main": "typed-matrix-ops.js",
   "dependencies": {
     "typed-array-function": ""
   },
@@ -10,13 +10,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "homepage": "https://github.com/jbroll/typedArrayFunction/blob/master/npm/typed-array-ops",
+  "homepage": "https://github.com/jbroll/typedArrayFunction/blob/master/npm/typed-matrix-ops",
   "repository": {
     "type": "git",
     "url": " git://github.com/jbroll/typedArrayFunction.git"
   },
   "keywords": [
     "typed-array-function",
+    "matrix",
     "ndarray",
     "numeric",
     "scientific",

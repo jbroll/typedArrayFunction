@@ -164,10 +164,7 @@
 			    if ( state === 1 ) { index.push(str.substring(first, i)); }
 			    state--;
 			}
-			if ( str[i] === '[' ) {
-			    state++;
-			    first = i+1;
-			}
+			if ( str[i] === '[' ) { state++; }
 			i++;
 		    }
 		    break;
@@ -240,15 +237,16 @@
 
 	if ( opts === undefined ) { opts = {} };
 
-	// Capture the function parameter names and place them in the 
-	// hash table with corrosponding real function arguments.
-	//
 	var type = "";
 	var dime = 0
 
 	for ( i = 0; i < args.length; i++ ) {
 
-	    if ( typeof actuals[i] === "object" && (!opts.consider || opts.consider && opts.consider[args[i]] ) ) {
+	    if ( actuals[i] !== undefined && typeof actuals[i] === "object"
+	     && (opts.consider === undefined || ( typeof opts.consider === "object" && opts.consider[args[i]] !== false )) ) {
+
+		hash[args[i]] = actuals[i];
+
 		if ( !actuals[i].shape ) {
 		    actuals[i].shape = dim(actuals[i]);
 		}
@@ -274,15 +272,6 @@
 	    }
 	}
 
-	for ( i = 0; i < args.length; i++ ) {
-	    hash[args[i]] = actuals[i];
-
-	    if ( typeof actuals[i] === "object" && !actuals[i].shape && (!opts.consider || opts.consider && opts.consider[args[i]] ) ) {
-		actuals[i].shape = dim(actuals[i]);
-	    }
-	}
-
-
 	var prep = this.prep;
 	var body = this.body;
 	var post = this.post;
@@ -290,14 +279,18 @@
 	var dims = [];
 
 	var indicies = [ "iW", "iV", "iU", "iZ", "iY", "iX" ];
+	var hasIndex = false;
 
 	// Match each source code identifier and any associated array indexing.  Extract
 	// the indicies and recursivly replace them also.
 	//
 	function replaceArrayRefs(text) {
+
 	    return replaceIdentifierRefs(text, function (id, indx) {
 		var ID = id;
 		var i, offset, reply;
+
+		if ( id === "index" ) { hasIndex = true; }
 
 		for ( i = 0; i < indx.length; i++ ) {
 		    indx[i] = replaceArrayRefs(indx[i]);
@@ -307,7 +300,8 @@
 		var dimen;
 		var joinStr, bracket, fixindx;
 
-		if ( arg && typeof arg === "object" && (!opts.consider || ( opts.consider && opts.consider[id] )) ) {
+
+		if ( arg !== undefined && typeof arg === "object" ) {
 
 		    if ( indx.length >= 1 && indx[indx.length-1].trim() === ".length" ) {
 		        indx[0] = ".shape";
@@ -375,25 +369,20 @@
 			}
 		    }
 		} else {
-		    if ( indx.length > 0 ) {
-			if ( indx[0][0] === "." ) {
-			    reply = id + indx[0].trim();
+		    reply = id;
+
+		    for ( i = 0; i <  indx.length; i++ ) {
+			if ( indx[i][0] === "." ) {
+			    reply += indx[i].trim();
 			} else {
-			    reply = id + "[" + indx.join("][") + "] ";
+			    reply += "[" + indx[i].trim() + "]";
 			}
-		    } else {
-			reply = id + " ";
 		    }
+		    reply += " "
 		}
 		
 		return reply;
 	    });
-	}
-	var brak = body.match(/\/\/ *\[(.*)\]/);
-	if ( brak !== null ) {
-	    brak = brak[1].replace(/\]\[/, " ").split(" ").map(function (x) { return x.split(":").map(function (n) { return parseInt(n, 10); }); });
-	} else {
-	    brak = [];
 	}
 
 	body = replaceArrayRefs(body);
@@ -405,25 +394,40 @@
 	dims.reverse();
 
 	var init = "\n", j;
+	var setp = "\n";
+
+	var indxZero = "";
+	var indxIncr = "";
 
 	if ( opts.loops === undefined || opts.loops == true ) {
+	    init += "	var index = [" + rep([dims.length], 0).join(",") + "];\n"
+	    init += "	var start = [" + rep([dims.length], 0).join(",") + "];\n"
+	    init += "	var   end = [" + rep([dims.length], 0).join(",") + "];\n\n"
+
 	    for ( i = 0; i < dims.length; i++ ) {
 
-		init += "	var " + indx[i] + "star = 0;\n"
-		init += "	var " + indx[i] + "dims = 0;\n"
 		for ( j = 0; j < args.length; j++ ) {
-		    if ( typeof actuals[j] === "object" && (!opts.consider || ( opts.consider && opts.consider[args[j]] )) ) {
-			init += "	" + indx[i] + "dims = Math.max(" + args[j] + ".shape[" + i + "], " + indx[i] + "dims);\n"
+		    if ( hash[args[j]] && actuals[j] !== undefined && typeof actuals[j] === "object" ) {
+			init += "	end[" + i + "] = " + args[j] + ".shape[" + i + "];\n"
+			break;
 		    }
 		}
-		if ( brak[i] ) {
-		    init += "	" + indi[i] + "star += " + brak[i][0] + ";\n"
-		    init += "	" + indi[i] + "dims += " + brak[i][1] + ";\n"
-		}
-		init += "\n"
 	    }
+	    init += "\n"
+
 	    for ( i = 0; i < dims.length; i++ ) {
-		body = "for ( var " + indi[i] + " = " + indi[i] + "star; " + indi[i] + " < " + indi[i] + "dims; " + indi[i] + "++ ) {\n    " + body + "\n    }";
+		setp += "	var "   + indx[i] + "start = start[" + i + "];\n";
+		setp += "	var   " + indx[i] + "end =   end[" + i + "];\n";
+
+	    }
+	    setp += "\n"
+	    for ( i = 0; i < dims.length; i++ ) {
+		if ( hasIndex ) {
+		    indxZero = "index[" + (dims.length - i - 1) + "] = 0;\n";
+		    indxIncr = "	index[" + (dims.length - i - 1) + "]++\n";
+		}
+		    
+		body = indxZero + "for ( var " + indi[i] + " = " + indi[i] + "start; " + indi[i] + " < " + indi[i] + "end; " + indi[i] + "++ ) {\n	" + body + "\n" + indxIncr + "\n    }";
 	    }
 	}
 
@@ -431,7 +435,7 @@
 
 	func  = "// Array optimized funciton\n";
 	func += "// " + type + "\n";
-	func += "return function (" + args.join(",") + ") {\n'use strict';\n\n" + prep + init + body + post + "\n}";
+	func += "return function (" + args.join(",") + ") {\n'use strict';\n\n" + init + prep + setp + body + post + "\n}";
 
 	if ( this.cache       === undefined ) { this.cache = {}; }
 	if ( this.cache[type] === undefined ) {
@@ -470,6 +474,7 @@
     module.exports.array   = array;
     module.exports.clone   = clone;
     module.exports.print   = print;
+    module.exports.rep     = rep;
     module.exports.dim     = dim;
 
     module.exports.epsilon = 2.220446049250313e-16;

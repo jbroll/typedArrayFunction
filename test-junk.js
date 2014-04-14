@@ -3,18 +3,65 @@ var ndarray = require("ndarray");
 var ndops   = require("ndarray-ops");
 var numeric = require("numeric");
 
+var size = 3;
+var n = 100000
+
 var typed =                     require("./typed-array-function");
 var typed = typed.extend(typed, require("./typed-array-ops"));
 var typed = typed.extend(typed, require("./typed-matrix-ops"));
 
+//typed.debug = 1;
 
-var size = 20;
-var n = 100000
 
 var a = ndarray(new Int32Array(size*size),   [size, size]);
 var b = ndarray(new Int32Array(size*size),   [size, size]);
 var c = ndarray(new Int32Array(size*size),   [size, size]);
 var d = ndarray(new Float32Array(size*size), [size, size]);
+
+add = typed({ consider: { a : false }}, 
+	function (a, b)    {
+
+	    a.data[index[0]] += b;
+	});
+
+
+if ( 0 ) {
+    x = cwise({
+	args: [ "array", "array", "scalar", "index" ],
+	body: function(a, b, c, j) { a = b + c[j] },
+	printCode: true
+	});
+
+    //console.log(x.toString())
+
+    x(a, b, c);
+
+
+
+    process.exit(0);
+}
+
+
+if ( 0 ) {
+    typed.addeq(b, 1);
+
+    typed.print(typed.array([3], "int32", 0));
+
+    a = add(typed.array([3], "int32", 0), b);
+
+    typed.print(b);
+    typed.print(a);
+
+
+    process.exit(0);
+}
+
+
+
+//x(a, b)
+//x = typed({ consider: { a: false }}, "function (a, b ) { a[index[1]] += b }");
+
+
 
 var E = typed.array([3], Int32Array, 2);
 var F = typed.array([3], Int32Array, 5);
@@ -144,7 +191,7 @@ numeric.addeq(g, 3)
 
 typed.debug = true
 var bakedAdd = typed.add.baked(e, f, g);
-typed.debug = false
+var bakedAxx = typed.add.baked(a, b, c);
 
 //console.log(e);
 //console.log(f);
@@ -163,8 +210,8 @@ console.log("typed O: ", timeit(n, function (){ typed.addeq(typed.array(typed.di
 console.log("numeric: ", timeit(n, function (){ numeric.add(f, g); }));
 console.log("baked 0: ", timeit(n, function (){ bakedAdd(e, f, g); }));
 
-console.log(bakedAdd.toString())
-
+//console.log(bakedAdd.toString())
+//console.log(bakedAxx.toString());
 
 //console.log(e);
 

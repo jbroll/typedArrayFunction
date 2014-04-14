@@ -1,23 +1,25 @@
 {
-  "name": "typed-array-ops",
-  "version": "0.1.11",
-  "description": "Element wise operator functions for ndarray data.",
-  "main": "typed-array-ops.js",
+  "name": "numeric-uncmin",
+  "version": "0.1.1",
+  "description": "Port of Numeric Javascript unconstrained minimization to typed-matrix-ops/typed-array-ops",
+  "main": "numeric-uncmin.js",
   "dependencies": {
-    "typed-array-function": ""
+    "typed-array-function": "*",
+    "typed-array-ops": "*",
+    "typed-matrix-ops": "*"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "homepage": "https://github.com/jbroll/typedArrayFunction/blob/master/npm/typed-array-ops",
+  "homepage": "https://github.com/jbroll/typedArrayFunction/blob/master/npm/numeric-uncmin",
   "repository": {
     "type": "git",
     "url": " git://github.com/jbroll/typedArrayFunction.git"
   },
   "keywords": [
-    "typed-array-function",
     "ndarray",
+    "function minimization",
     "numeric",
     "scientific",
     "computing",
