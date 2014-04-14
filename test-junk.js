@@ -1,17 +1,48 @@
 
 
 var size = 3;
+var n = 1000000
+
+
+var ndarray = require("ndarray");
+var ndops   = require("ndarray-ops");
+var cwise   = require("cwise");
 
 var a = ndarray(new Int32Array(size*size),   [size, size]);
 var b = ndarray(new Int32Array(size*size),   [size, size]);
 var c = ndarray(new Int32Array(size*size),   [size, size]);
 var d = ndarray(new Float32Array(size*size), [size, size]);
 
+x = cwise({
+    args: [ "array", "array", "scalar", "index" ],
+    body: function(a, b, c, j) { a = b + c[j] },
+    printCode: true
+    });
+
+//console.log(x.toString())
+
+x(a, b, c);
+
+
+
+process.exit(0);
+
+
+var numeric = require("./numeric-1.2.6");
+
+var typed =                     require("./typed-array-function");
+var typed = typed.extend(typed, require("./typed-array-ops"));
+var typed = typed.extend(typed, require("./typed-matrix-ops"));
+
+//typed.debug = 1;
+
+
+
 var E = typed.array([3], Int32Array, 2);
 var F = typed.array([3], Int32Array, 5);
 
-console.log(E.shape);
-console.log(E.shape.length);
+//console.log(E.shape);
+//console.log(E.shape.length);
 
 function now() { var now = process.hrtime(); return now[0] + now[1]/1e9; }
 
@@ -124,7 +155,6 @@ function addZZZ(a,b,c) {
 
 
 typed.add(a, b, 3)
-process.exit(0);
 
      
 typed.addeq(a, b);
@@ -136,11 +166,11 @@ numeric.addeq(g, 3)
 
 var bakedAdd = typed.add.baked(e, f, g);
 
-console.log(e);
-console.log(f);
-console.log(g);
+//console.log(e);
+//console.log(f);
+//console.log(g);
 
-var n = 10000
+
 
 console.log("typed o: ", timeit(n, function (){ typed.addeq(e, f); }));
 console.log("typed i: ", timeit(n, function (){ typed.addeq(a, b); }));
@@ -148,11 +178,12 @@ console.log("ndops i: ", timeit(n, function (){ ndops.addeq(b, c); }));
 console.log("inline0: ", timeit(n, function (){ addZZZ(a, b, c); }));
 console.log("inlineY: ", timeit(n, function (){ addYYY(typed.array(typed.dim(e)), e, f); }));
 console.log("inlineX: ", timeit(n, function (){ addXXX(typed.array(typed.dim(e)), e, f); }));
-console.log("baked 0: ", timeit(n, function (){ bakedAdd(e, f); }));
+console.log("baked 0: ", timeit(n, function (){ bakedAdd(e, f, g); }));
 console.log("numeric: ", timeit(n, function (){ numeric.add(e, f); }));
 
+console.log(bakedAdd.toString());
 
-console.log(e);
+//console.log(e);
 
 process.exit(0);
 
