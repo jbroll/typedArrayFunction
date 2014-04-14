@@ -54,8 +54,7 @@ for(var i=0; i<dest.shape[0]; ++i) {
 }
 ```
 
-This library will create new arrays for you as is the convention in Numeric Javascript, but you might wish to avoid this expensive allocation for intermediate results by providing destination arrays where apropriate.
-You may specify where the result is stored, or the library will allocate a destination array that is of the same type as the first argument.  When supplying a binary operator function with 3 arguments, the first argument is used as the result.  If the call has only 2 arguments then a result array will be allocated.  
+This library will create new arrays for you as is the convention in Numeric Javascript, but you might wish to avoid this expensive allocation for intermediate results by providing destination arrays where apropriate.  When supplying a binary operator function with 3 arguments, the first argument will be used as the result.  If the call has only 2 arguments then a result array will be allocated.  
 
 Scaler variations of the operators, suffixed with 's', are provided for compatibility with ndarray-ops, but are unnecessary.  These functions are aliases for thier array versions.
 
@@ -92,9 +91,9 @@ The assignment operator:
 
 **Nullary operators**
 
-Nullary operators only take on argument for the array they are assigning to, and don't have any variations. Currently there is only one of these:
+Nullary operators only take one argument for the array they are assigning to, and don't have any variations. Currently there is only one of these:
 
- * random - Sets each element of an array to a random scalar between 0 and 1, Math.random()
+ * random - Sets each element of an array to a random scalar between 0 and 1, Math.random().
 
 **Unary operators**
 
@@ -126,10 +125,10 @@ Typed-array-ops exposes the following unary operators:
 
 **Non-symmetric binary operators**
 
-There are also a few non-symmetric binary operators.  There are only two of these:
+There are two non-symmetric binary operators:
 
- * atan2[,s,eq,seq,op,sop,opeq,sopeq]
- * pow[,s,eq,seq,op,sop,opeq,sopeq]
+ * atan2[,s,eq,seq]
+ * pow[,s,eq,seq]
 
 
 **Map-reduce (aggregate) operators**
