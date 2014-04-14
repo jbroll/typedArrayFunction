@@ -1,6 +1,6 @@
 {
   "name": "typed-matrix-ops",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Numeric Javascript matrix operators ported to typed-array-function",
   "main": "typed-matrix-ops.js",
   "dependencies": {
