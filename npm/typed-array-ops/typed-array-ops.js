@@ -53,8 +53,11 @@
 	ops[opname + "eq_mask"] = typed("function (a, b   , m) { if ( m ) { a " + op + "= b;    } }");
 
 	ops[opname] = twofourthr(ops[opname + "3"]);
-	ops[opname].baked = function (ops) {
-	    return function(a, b, c) { return twofourthr(ops.baked(a, b, c)); }
+	ops[opname].baked = function (op) {
+	    return function(a, b, c) {
+		if ( c === undefined )  { return twofourthr(op.baked(a, b, c)); 
+		} else			{ return op.baked(a, b, c); }
+	    }
 	}(ops[opname + "3"]);
 
 	ops[opname + "s"]   = ops[opname];
