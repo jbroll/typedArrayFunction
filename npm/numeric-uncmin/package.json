@@ -1,0 +1,33 @@
+{
+  "name": "numeric-uncmin",
+  "version": "0.1.0",
+  "description": "Port of Numeric Javascript unconstrained minimization to typed-matrix-ops/typed-array-ops",
+  "main": "numeric-uncmin.js",
+  "dependencies": {
+    "typed-array-function": "*",
+    "typed-array-ops":      "*",
+    "typed-matrix-ops":     "*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "homepage": "https://github.com/jbroll/typedArrayFunction/blob/master/npm/numeric-uncmin",
+  "repository": {
+    "type": "git",
+    "url": " git://github.com/jbroll/typedArrayFunction.git"
+  },
+  "keywords": [
+    "ndarray",
+    "function minimization",
+    "numeric",
+    "scientific",
+    "computing",
+    "image",
+    "array",
+    "typed",
+    "math"
+  ],
+  "author": "john@cfa.harvard.edu",
+  "license": "MIT"
+}
