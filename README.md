@@ -10,5 +10,5 @@ Typed array functions provides a number of javascript functions which emulate
 
   * [typed-array-rotate](https://github.com/jbroll/typedArrayFunction/tree/master/npm/typed-array-rotate)      - [ndarray-rotate](https://www.npmjs.org/package/image-rotate) ported to typed-array-function.
 
-  * [numeric-uncmin](https://github.com/jbroll/typedArrayFunction/tree/master/npm/typed-array-ops)	    - Unconstrained funciton minimization from Numeric Javascript ported to typed-array-*. 
+  * [numeric-uncmin](https://github.com/jbroll/typedArrayFunction/tree/master/npm/muneric-uncmin)	    - Unconstrained funciton minimization from Numeric Javascript ported to typed-array-*. 
 
