@@ -7,7 +7,7 @@ operators for javascript TypedArray data.  It uses the
 performs a role similar to the [cwise](https://github.com/mikolalysenko/cwise "")
 function generator.  It has a less complex "mini langauge" notation
 than cwise and allows direct interoperatibility with the array of array data
-type of numeric.
+type of [Numeric Javascript](http://www.numericjs.com).
 
 Typed-array was written to allow computation on scientific image data to be
 done in javascript.  It is written to work with ndarray and array of array data
@@ -51,6 +51,8 @@ addeq(X, Y)
     * iW - 6th dimension loop.
 
   * Or via an array named "index".
+
+  * The starting and ending index of each dimensions can be adjusted by the prepratory code by updating the ranges in the start and end arrays.
 
 **More Examples**
 
@@ -145,6 +147,7 @@ function that will be called multple time from a particular context are fixed,
 the function can be pre generated and saved in a local variable.  I've called this
 process "baking".
 
+The baking API is still very beta.
 
 **Numeric Javascript Support Functions**
 
