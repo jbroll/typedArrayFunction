@@ -1,7 +1,7 @@
 
 **Typed Array Operators**
 
-This package creates a number of usefull operator functions for ndarray data.  Many of the funcitons provided by the [ndarray-ops](npm/typed-array-function/package.json) package and those provided [Numeric Javascript](http://www.numericjs.com/) are available.
+This package creates a number of usefull operator functions for [ndarray](https://www.npmjs.org/package/ndarray-ops) data.  Many of the funcitons provided by the [ndarray-ops](npm/typed-array-function/package.json) package and those provided [Numeric Javascript](http://www.numericjs.com/) are available.
 
 ```bash
 npm install typed-array-function
@@ -35,8 +35,8 @@ typed.mulseq(a, 0.5)
 
 //Print some statistics about a:
 console.log(
-  "inf(a) = ", ops.inf(a),
-  "sup(a) = ", ops.sup(a))
+  "inf(a) = ", typed.inf(a),
+  "sup(a) = ", typed.sup(a))
 ```
 
 **Conventions**
