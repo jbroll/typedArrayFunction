@@ -4,7 +4,7 @@
   "description": "Typed-array-function allows the simple creation of element wise function operators for javascript TypedArray data.",
   "main": "typed-array-function.js",
   "dependencies": {
-    "ndarray": "*"
+    "ndarray-nobuffer": "*"
   },
   "devDependencies": {},
   "scripts": {

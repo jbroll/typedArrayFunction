@@ -5,7 +5,7 @@
 "use strict";
 
 (function() {
-    var ndarray = require("ndarray");
+    var ndarray = require("ndarray-nobuffer");
 
     var types = {
 	    int8  :   Int8Array
