@@ -6,9 +6,10 @@ var numeric = require("numeric");
 var size = 3;
 var n = 100000
 
-var typed =                     require("typed-array-function");
-var typed = typed.extend(typed, require("typed-array-ops"));
-var typed = typed.extend(typed, require("typed-matrix-ops"));
+var typed =                     require("./typed-array-function");
+var typed = typed.extend(typed, require("./typed-array-ops"));
+
+//var typed = typed.extend(typed, require("typed-matrix-ops"));
 
 //typed.debug = 1;
 

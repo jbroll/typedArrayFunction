@@ -1,12 +1,11 @@
 /*jslint white: true, vars: true, plusplus: true, nomen: true, unparam: true, evil: true, regexp: true */
-/*jshint node: true, -W099: true, laxbreak:true, laxcomma:true, multistr:true, smarttabs:true */
 /*globals */ 
 
 "use strict";
 
 (function () {
     var i;
-    var typed = require("typed-array-function");
+    var typed = require("./typed-array-function");
 
     var ops = {}, opname, op;
     module.exports = ops;
@@ -28,14 +27,29 @@
 	    }
 
 	    return ops(a, b, c);
-	}
+	};
     }
     function onefourtwo(ops) {				// Allocate an output array as needed
 	return function (a, b) {
 	    if ( b === undefined ) { b = a; a = typed.array(typed.dim(b), b); }
 
 	    return ops(a, b);
-	}
+	};
+    }
+
+    function twofourthr_bake(op) {
+	return function(a, b, c) {
+	    if ( c === undefined )  { return twofourthr(op.baked(a, b, c)); }
+
+	    return op.baked(a, b, c);
+	};
+    }
+    function onefourtwo_bake(op) {
+	return function(a, b) {
+	    if ( b === undefined )  { return onefourtwo(op.baked(a, b)); }
+
+	    return op.baked(a, b);
+	};
     }
 
 
@@ -45,23 +59,20 @@
     };
 
       for(opname in assign_ops) {
-	op = assign_ops[opname];
+	if ( assign_ops.hasOwnProperty(opname) ) {
+	    op = assign_ops[opname];
 
-	ops[opname + "3"]       = typed("function (a, b, c)    {            a = b " + op + " c; }");
-	ops[opname + "_mask"]   = typed("function (a, b, c, m) { if ( m ) { a = b " + op + " c; } }");
-	ops[opname + "eq"]      = typed("function (a, b   )    {            a " + op + "= b;    }  ");
-	ops[opname + "eq_mask"] = typed("function (a, b   , m) { if ( m ) { a " + op + "= b;    } }");
+	    ops[opname + "3"]       = typed("function (a, b, c)    {            a = b " + op + " c; }");
+	    ops[opname + "_mask"]   = typed("function (a, b, c, m) { if ( m ) { a = b " + op + " c; } }");
+	    ops[opname + "eq"]      = typed("function (a, b   )    {            a " + op + "= b;    }  ");
+	    ops[opname + "eq_mask"] = typed("function (a, b   , m) { if ( m ) { a " + op + "= b;    } }");
 
-	ops[opname] = twofourthr(ops[opname + "3"]);
-	ops[opname].baked = function (op) {
-	    return function(a, b, c) {
-		if ( c === undefined )  { return twofourthr(op.baked(a, b, c)); 
-		} else			{ return op.baked(a, b, c); }
-	    }
-	}(ops[opname + "3"]);
+	    ops[opname]       = twofourthr     (ops[opname + "3"]);
+	    ops[opname].baked = twofourthr_bake(ops[opname + "3"]);
 
-	ops[opname + "s"]   = ops[opname];
-	ops[opname + "seq"] = ops[opname + "eq"];
+	    ops[opname + "s"]   = ops[opname];
+	    ops[opname + "seq"] = ops[opname + "eq"];
+	}
       }
 
     var binary_ops = { and: "&&", or: "||",
@@ -69,37 +80,37 @@
 		       gt: ">", leq: "<=", geq: ">=" };
 
       for(opname in binary_ops) {
-	op = binary_ops[opname];
+	if ( binary_ops.hasOwnProperty(opname) ) {
+	    op = binary_ops[opname];
 
-	ops[opname + "3"]            = typed("function (a, b, c)    {            a = b " + op + " c; }");
-	ops[opname + "_mask"]        = typed("function (a, b, c, m) { if ( m ) { a = b " + op + " c; } }");
-	ops[opname + "eq"]           = typed("function (a, b   )    {            a = a " + op + " b; }  ");
-	ops[opname + "eq_mask"]      = typed("function (a, b   , m) { if ( m ) { a = a " + op + " b; } }");
+	    ops[opname + "3"]            = typed("function (a, b, c)    {            a = b " + op + " c; }");
+	    ops[opname + "_mask"]        = typed("function (a, b, c, m) { if ( m ) { a = b " + op + " c; } }");
+	    ops[opname + "eq"]           = typed("function (a, b   )    {            a = a " + op + " b; }  ");
+	    ops[opname + "eq_mask"]      = typed("function (a, b   , m) { if ( m ) { a = a " + op + " b; } }");
 
-	ops[opname] = twofourthr(ops[opname + "3"]);
-	ops[opname].baked = function (ops) {
-	    return function(a, b, c) { return twofourthr(ops.baked(a, b, c)); }
-	}(ops[opname + "3"]);
+	    ops[opname]       = twofourthr     (ops[opname + "3"]);
+	    ops[opname].baked = twofourthr_bake(ops[opname + "3"]);
 
-	ops[opname + "s"]   = ops[opname];
-	ops[opname + "seq"] = ops[opname + "eq"];
+	    ops[opname + "s"]   = ops[opname];
+	    ops[opname + "seq"] = ops[opname + "eq"];
+	}
       }
 
 
     var unary_ops = { not: "!", bnot: "~", neg: "-", recip: "1.0/" };
 
       for(opname in unary_ops) {
-	op = unary_ops[opname];
-	    
-	ops[opname + "2"]            = typed("function (a, b   )    {            a = " + op + " b; }");
-	ops[opname + "_mask"]        = typed("function (a, b   , m) { if ( m ) { a = " + op + " b; } }");
-	ops[opname + "eq"]           = typed("function (a      )    {            a = " + op + " a; }");
-	ops[opname + "eq" + "_mask"] = typed("function (a      , m) { if ( m ) { a = " + op + " a; } }");
+	if ( unary_ops.hasOwnProperty(opname) ) {
+	    op = unary_ops[opname];
+		
+	    ops[opname + "2"]            = typed("function (a, b   )    {            a = " + op + " b; }");
+	    ops[opname + "_mask"]        = typed("function (a, b   , m) { if ( m ) { a = " + op + " b; } }");
+	    ops[opname + "eq"]           = typed("function (a      )    {            a = " + op + " a; }");
+	    ops[opname + "eq" + "_mask"] = typed("function (a      , m) { if ( m ) { a = " + op + " a; } }");
 
-	ops[opname] = onefourtwo(ops[opname + "2"]);
-	ops[opname].baked = function (ops) {
-	    return function(a, b, c) { return onefourtwo(ops.baked(a, b, c)); }
-	}(ops[opname + "2"]);
+	    ops[opname]       = onefourtwo     (ops[opname + "2"]);
+	    ops[opname].baked = onefourtwo_bake(ops[opname + "2"]);
+	}
       }
 
     var math_unary = [ "Math.abs", "Math.exp", "Math.floor", "Math.log", "Math.round", "Math.sqrt"
@@ -107,17 +118,17 @@
 		    , "isFinite", "isNaN" ]; 
 
       for( i = 0; i < math_unary.length; i++ ) {
-	opname = op = math_unary[i];
-	    
-	ops[opname + "2"]            = typed("function (a, b   )    {            a = " + op + "(b); }");
-	ops[opname + "_mask"]        = typed("function (a, b   , m) { if ( m ) { a = " + op + "(b); } }");
-	ops[opname + "eq"]           = typed("function (a      )    {            a = " + op + "(a); }");
-	ops[opname + "eq" + "_mask"] = typed("function (a      , m) { if ( m ) { a = " + op + "(a); } }");
+	if ( math_unary.hasOwnProperty(opname) ) {
+	    opname = op = math_unary[i];
+		
+	    ops[opname + "2"]            = typed("function (a, b   )    {            a = " + op + "(b); }");
+	    ops[opname + "_mask"]        = typed("function (a, b   , m) { if ( m ) { a = " + op + "(b); } }");
+	    ops[opname + "eq"]           = typed("function (a      )    {            a = " + op + "(a); }");
+	    ops[opname + "eq" + "_mask"] = typed("function (a      , m) { if ( m ) { a = " + op + "(a); } }");
 
-	ops[opname] = onefourtwo(ops[opname + "2"]);
-	ops[opname].baked = function (ops) {
-	    return function(a, b, c) { return onefourtwo(ops.baked(a, b, c)); }
-	}(ops[opname + "2"]);
+	    ops[opname]       = onefourtwo     (ops[opname + "2"]);
+	    ops[opname].baked = onefourtwo_bake(ops[opname + "2"]);
+	}
       }
 
     var math_comm = [ "max", "min" ];
@@ -128,10 +139,8 @@
 	ops[opname + "3"]            = typed("function (a, b, c)    {            a = Math." + op + "(b, c); }");
 	ops[opname + "_mask"]        = typed("function (a, b, c, m) { if ( m ) { a = Math." + op + "(b, c); } }");
 
-	ops[opname] = twofourthr(ops[opname + "3"]);
-	ops[opname].baked = function (ops) {
-	    return function(a, b, c) { return twofourthr(ops.baked(a, b, c)); }
-	}(ops[opname + "3"]);
+	ops[opname]       = twofourthr     (ops[opname + "3"]);
+	ops[opname].baked = twofourthr_bake(ops[opname + "3"]);
 
 	ops[opname + "s"]        = ops[opname];
 	ops[opname + "s" + "eq"] = ops[opname];
@@ -145,10 +154,8 @@
 	ops[opname + "3"]            = typed("function (a, b, c)    {            a = Math." + op + "(b, c); }");
 	ops[opname + "_mask"]        = typed("function (a, b, c, m) { if ( m ) { a = Math." + op + "(b, c); } }");
 
-	ops[opname] = twofourthr(ops[opname + "3"]);
-	ops[opname].baked = function (ops) {
-	    return function(a, b, c) { return twofourthr(ops.baked(a, b, c)); }
-	}(ops[opname + "3"]);
+	ops[opname]       = twofourthr     (ops[opname + "3"]);
+	ops[opname].baked = twofourthr_bake(ops[opname + "3"]);
 
 	ops[opname + "s"]        = ops[opname];
 	ops[opname + "s" + "eq"] = ops[opname];

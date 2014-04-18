@@ -1,4 +1,10 @@
 
+SRC=	typed-array-function.js		\
+	typed-array-ops.js		\
+	typed-matrix-ops.js		\
+	typed-numeric-uncmin.js		\
+	typed-array-rotate.js		\
+	typed-array-warp.js
 test: 
 	nodeunit typed-test.js
 
@@ -26,6 +32,9 @@ npm/$(PUBLISH_TARGET)/$(PUBLISH_TARGET).js : $(PUBLISH_TARGET).js
 	cp $(PUBLISH_TARGET).js npm/$(PUBLISH_TARGET)/$(PUBLISH_TARGET).js
 
 publish-target: npm/$(PUBLISH_TARGET)/package.json
+
+lint:
+	jslint  $(SRC)
 	
 publish: 
 	$(MAKE) PUBLISH_TARGET=typed-array-function 	publish-target

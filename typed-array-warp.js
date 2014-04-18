@@ -3,7 +3,7 @@
 "use strict";
 
 var interp = require("ndarray-linear-interpolate");
-var typed = require("typed-array-function");
+var typed = require("./typed-array-function");
 
 var do_warp = typed(function (dest, func, interp) {
     var warped = dest.shape.slice(0);

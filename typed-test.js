@@ -13,9 +13,10 @@ var ndarray = require("ndarray");
 var ndops   = require("ndarray-ops");
 var numeric = require("numeric");
 
-var typed =                     require("typed-array-function");
-var typed = typed.extend(typed, require("typed-array-ops"));
-var typed = typed.extend(typed, require("typed-matrix-ops"));
+var typed =                     require("./typed-array-function");
+var typed = typed.extend(typed, require("./typed-array-ops"));
+
+//var typed = typed.extend(typed, require("./typed-matrix-ops"));
 
 
 exports.sanity = function(unit) {
@@ -72,6 +73,7 @@ exports.basics = function(unit) {
     ndops.sub(here, ndar, ndar); 	unit.ae(typed.sub(ther, data, data), here, "Three address sub");
     ndops.mul(here, ndar, ndar); 	unit.ae(typed.mul(ther, data, data), here, "Three address mul");
     ndops.div(here, ndar, ndar); 	unit.ae(typed.div(ther, data, data), here, "Three address div");
+
 
     unit.done();
 }

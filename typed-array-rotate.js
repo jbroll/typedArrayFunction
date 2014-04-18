@@ -2,7 +2,7 @@
 
 "use strict";
 
-var warp = require("typed-array-warp");
+var warp = require("./typed-array-warp");
 
 
 function rotateImage(out, inp, theta, iX, iY, oX, oY) {

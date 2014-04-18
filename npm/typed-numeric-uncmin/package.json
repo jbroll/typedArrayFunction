@@ -1,6 +1,6 @@
 {
   "name": "typed-numeric-uncmin",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Port of Numeric Javascript unconstrained minimization to typed-matrix-ops/typed-array-ops",
   "main": "numeric-uncmin.js",
   "dependencies": {
@@ -11,7 +11,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "homepage": "https://github.com/jbroll/typedArrayFunction/blob/master/npm/numeric-uncmin",
+  "homepage": "https://github.com/jbroll/typedArrayFunction/blob/master/npm/typed-numeric-uncmin",
   "repository": {
     "type": "git",
     "url": " git://github.com/jbroll/typedArrayFunction.git"
