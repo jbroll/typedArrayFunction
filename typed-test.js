@@ -13,8 +13,8 @@ var ndarray = require("ndarray");
 var ndops   = require("ndarray-ops");
 var numeric = require("numeric");
 
-var typed =                     require("./typed-array-function");
-var typed = typed.extend(typed, require("./typed-array-ops"));
+var typed =                     require("typed-array-function");
+var typed = typed.extend(typed, require("typed-array-ops"));
 
 //var typed = typed.extend(typed, require("./typed-matrix-ops"));
 

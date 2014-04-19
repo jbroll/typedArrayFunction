@@ -1,4 +1,8 @@
+/*jslint white: true, vars: true, plusplus: true, nomen: true, unparam: true, evil: true, regexp: true, bitwise: true */
+/*jshint node: true, -W099: true, laxbreak:true, laxcomma:true, multistr:true, smarttabs:true */
+/*globals */ 
 
+"use strict";
 
 var typed   = require("typed-array-function");
 var numeric = typed;
@@ -20,7 +24,7 @@ typed.dot = function dot(x,y) {
 	case 0: return x*y;
 	default: throw new Error('numeric.dot only works on vectors and matrices');
     }
-}
+};
 
 numeric.dotVV = function dotVV(x,y) {
     var i,n=x.length,i1,ret = x[n-1]*y[n-1];
@@ -32,17 +36,17 @@ numeric.dotVV = function dotVV(x,y) {
     if(i===0) { ret += x[0]*y[0]; }
 
     return ret;
-}
+};
 
 numeric.dotMV = function dotMV(x,y) {
-    var p = x.length, q = y.length,i;
+    var i, p = x.length;
     var ret = this.array([p], x.dtype), dotVV = this.dotVV;
     for(i=p-1;i>=0;i--) { ret[i] = dotVV(x[i],y); }
     return ret;
-}
+};
 
 numeric.dotVM = function dotVM(x,y) {
-    var i,j,k,p,q,r,ret,foo,bar,woo,i0,k0,p0,r0,s1,s2,s3,baz,accum;
+    var j,k,p,q,ret,woo,i0;
     p = x.length; q = y[0].length;
     ret = numeric.array([q], x.dtype);
     for(k=q-1;k>=0;k--) {
@@ -55,12 +59,14 @@ numeric.dotVM = function dotVM(x,y) {
 	ret[k] = woo;
     }
     return ret;
-}
+};
 
 numeric.dotMM = function dotMM(reply,x,y) {
-    var i,j,k,p,q,r=reply.shape[1],foo,bar,woo,i0,k0,p0,r0;
+    var i,j,k,r=reply.shape[1],foo,bar,woo,i0;
 
-    p = x.length; q = y.length
+    var p = x.length;
+    var q = y.length;
+
     for(i=p-1;i>=0;i--) {
 	foo = reply[i];
 	bar = x[i];
@@ -76,7 +82,7 @@ numeric.dotMM = function dotMM(reply,x,y) {
 	}
 	//ret[i] = foo;
     }
-}
+};
 
 numeric.diag = function diag(d) {
     var i,i1,j,n = d.length, A = this.array([n, n], d.dtype), Ai;
@@ -97,8 +103,8 @@ numeric.diag = function diag(d) {
 	//A[i] = Ai;
     }
     return A;
-}
-numeric.identity = function identity(n, type) { return this.diag(this.array([n],type,1)); }
+};
+numeric.identity = function identity(n, type) { return this.diag(this.array([n],type,1)); };
 
 numeric.tensorXX = function tensor(A,x,y) {
     var m = x.length, n = y.length, Ai, i,j,xi;
@@ -120,18 +126,18 @@ numeric.tensorXX = function tensor(A,x,y) {
     }
 
     //console.log(x, y, A[0], A[1]);
-}
+};
 numeric.tensorXX = typed({ loops: false }, numeric.tensorXX);
 numeric.tensor   = function tensor(x,y) {
-    var s1, s2;
 
-    if(typeof x === "number" || typeof y === "number") return numeric.mul(x,y);
-    var s1 = numeric.dim(x), s2 = numeric.dim(y);
+    if(typeof x === "number" || typeof y === "number") { return numeric.mul(x,y); }
+    var s1 = numeric.dim(x);
+    var s2 = numeric.dim(y);
     if(s1.length !== 1 || s2.length !== 1) {
 	throw new Error('numeric: tensor product is only defined for vectors');
     }
     
-    return numeric.tensorXX(numeric.array([s1[0], s2[0]], x.dtype), x, y)
+    return numeric.tensorXX(numeric.array([s1[0], s2[0]], x.dtype), x, y);
 };
 
 

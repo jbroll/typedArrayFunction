@@ -1,4 +1,6 @@
+/*jslint white: true, vars: true, plusplus: true, nomen: true, unparam: true, evil: true, regexp: true, bitwise: true */
 
+"use strict";
 
 var numeric =                         require("typed-array-function");
     numeric = numeric.extend(numeric, require("typed-array-ops"));
@@ -8,13 +10,13 @@ var numeric =                         require("typed-array-function");
 exports.gradient = function gradient(f,x) {
     var n = x.length;
     var f0 = f(x);
-    if(isNaN(f0)) throw new Error('gradient: f(x) is a NaN!');
-    var i,x0 = numeric.clone(x),f1,f2, J = Array(n);
-    var errest,roundoff,max = Math.max,eps = 1e-3,abs = Math.abs, min = Math.min;
-    var t0,t1,t2,it=0,d1,d2,N;
+    if(isNaN(f0)) { throw new Error('gradient: f(x) is a NaN!'); }
+    var i,x0 = numeric.clone(x),f1,f2, J = new [].constructor(n);
+    var errest,max = Math.max,eps = 1e-3,abs = Math.abs, min = Math.min;
+    var t0,t1,t2,it=0,d1,d2,N,h;
     for(i=0;i<n;i++) {
-        var h = max(1e-6*f0,1e-8);
-        while(1) {
+        h = max(1e-6*f0,1e-8);
+        while(true) {
             ++it;
             if(it>20) { throw new Error("Numerical gradient fails"); }
             x0[i] = x[i]+h;
@@ -31,29 +33,29 @@ exports.gradient = function gradient(f,x) {
             d2 = (f0-f2)/h;
             N = max(abs(J[i]),abs(f0),abs(f1),abs(f2),abs(t0),abs(t1),abs(t2),1e-8);
             errest = min(max(abs(d1-J[i]),abs(d2-J[i]),abs(d1-d2))/N,h/N);
-            if(errest>eps) { h/=16; }
-            else break;
+            if(errest>eps) { h/=16;
+	    } else { break; }
             }
     }
     return J;
-}
+};
 exports.uncmin = function uncmin(f,x0,tol,gradient,maxit,callback,options) {
     var grad = exports.gradient;
-    if(typeof options === "undefined") { options = {}; }
-    if(typeof tol === "undefined") { tol = 1e-8; }
-    if(typeof gradient === "undefined") { gradient = function(x) { return grad(f,x); }; }
-    if(typeof maxit === "undefined") maxit = 1000;
+    if(options  === undefined) { options = {}; }
+    if(tol      === undefined) { tol = 1e-8; }
+    if(gradient === undefined) { gradient = function(x) { return grad(f,x); }; }
+    if(maxit    === undefined) { maxit = 1000; }
     x0 = numeric.clone(x0);
     var n = x0.length;
     var f0 = f(x0),f1,df0;
-    if(isNaN(f0)) throw new Error('uncmin: f(x0) is a NaN!');
+    if(isNaN(f0)) { throw new Error('uncmin: f(x0) is a NaN!'); }
     var max = Math.max, norm2 = numeric.norm2;
     tol = max(tol,numeric.epsilon);
     var step,g0,g1,H1 = options.Hinv || numeric.identity(n);
     var dot = numeric.dot, sub = numeric.sub, add = numeric.add, ten = numeric.tensor, div = numeric.div, mul = numeric.mul;
 
     var all = numeric.all, isfinite = numeric.isFinite, neg = numeric.neg;
-    var it=0,i,s,x1,y,Hy,Hs,ys,i0,t,nstep,t1,t2;
+    var it=0,s,x1,y,Hy,ys,t,nstep;
     var msg = "";
     g0 = gradient(x0);
     while(it<maxit) {
@@ -99,4 +101,4 @@ exports.uncmin = function uncmin(f,x0,tol,gradient,maxit,callback,options) {
 
     }
     return {solution: x0, f: f0, gradient: g0, invHessian: H1, iterations:it, message: msg};
-}
+};

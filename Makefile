@@ -20,8 +20,6 @@ npm-install:
 npm-test:
 	npm install ndarray-ops
 
-publish-typed-array-function: npm/typed-array-function/typed-array-function.js
-
 npm/$(PUBLISH_TARGET)/package.json :	npm/$(PUBLISH_TARGET)/README.md			\
 					npm/$(PUBLISH_TARGET)/$(PUBLISH_TARGET).js
 	cd npm/$(PUBLISH_TARGET); npm version patch; npm publish
@@ -31,11 +29,21 @@ npm/$(PUBLISH_TARGET)/package.json :	npm/$(PUBLISH_TARGET)/README.md			\
 npm/$(PUBLISH_TARGET)/$(PUBLISH_TARGET).js : $(PUBLISH_TARGET).js
 	cp $(PUBLISH_TARGET).js npm/$(PUBLISH_TARGET)/$(PUBLISH_TARGET).js
 
+package-target: npm/$(PUBLISH_TARGET)/$(PUBLISH_TARGET).js
+
 publish-target: npm/$(PUBLISH_TARGET)/package.json
 
 lint:
 	jslint  $(SRC)
-	
+
+package:
+	$(MAKE) PUBLISH_TARGET=typed-array-function 	package-target
+	$(MAKE) PUBLISH_TARGET=typed-array-ops 		package-target
+	$(MAKE) PUBLISH_TARGET=typed-array-rotate 	package-target
+	$(MAKE) PUBLISH_TARGET=typed-array-warp 	package-target
+	$(MAKE) PUBLISH_TARGET=typed-matrix-ops 	package-target
+	$(MAKE) PUBLISH_TARGET=typed-numeric-uncmin	package-target
+
 publish: 
 	$(MAKE) PUBLISH_TARGET=typed-array-function 	publish-target
 	$(MAKE) PUBLISH_TARGET=typed-array-ops 		publish-target
