@@ -213,7 +213,7 @@
 
 		if ( id === "index" ) { hasIndex = true; }
 
-		for ( k = 0; k < indx.length; i++ ) {
+		for ( k = 0; k < indx.length; k++ ) {
 		    indx[k] = replaceArrayRefs(indx[k]);
 		}
 
