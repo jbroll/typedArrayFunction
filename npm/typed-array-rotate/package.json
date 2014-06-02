@@ -1,6 +1,6 @@
 {
   "name": "typed-array-rotate",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Rotate a data array",
   "main": "typed-array-rotate.js",
   "dependencies": {
