@@ -213,7 +213,7 @@
 
 		if ( id === "index" ) { hasIndex = true; }
 
-		for ( k = 0; k < indx.length; i++ ) {
+		for ( k = 0; k < indx.length; k++ ) {
 		    indx[k] = replaceArrayRefs(indx[k]);
 		}
 
@@ -422,9 +422,13 @@
 	return typed.assign(typed.array(typed.dim(x), x), x);
     }
 
-    function iota(n) {
-	var i, result = [];
-	for ( i = 0; i<n; ++i ) { result[i] = i; }   
+    function iota(i, n) {
+	if ( n === undefined ) {
+	    n = i;
+	    i = 0;
+	}
+	var j, result = [];
+	for ( j = 0; j<n; j++ ) { result[j] = i; i += 1; }   
 
 	return result;
     }
