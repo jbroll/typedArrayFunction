@@ -166,7 +166,7 @@
 	var func;
 
 	for ( i = 0; i < args.length; i++ ) {
-	    if ( actuals[i] !== undefined && typeof actuals[i] === "object"
+	    if ( actuals[i] !== null && actuals[i] !== undefined && typeof actuals[i] === "object"
 	     && (opts.consider === undefined || ( typeof opts.consider === "object" && opts.consider[args[i]] !== false )) ) {
 
 		hash[args[i]] = actuals[i];
