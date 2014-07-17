@@ -1,6 +1,6 @@
 {
   "name": "typed-array-function",
-  "version": "0.1.31",
+  "version": "0.1.32",
   "description": "Typed-array-function allows the simple creation of element wise function operators for javascript TypedArray data.",
   "main": "typed-array-function.js",
   "dependencies": {
