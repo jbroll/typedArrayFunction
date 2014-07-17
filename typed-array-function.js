@@ -354,21 +354,23 @@
 	func += "// " + type + "\n";
 	func += "return function (" + args.join(",") + ") {\n'use strict';\n\n" + init + prep + setp + body + post + "\n}";
 
-	if ( this.cache       === undefined ) { this.cache = {}; }
-	if ( this.cache[type] === undefined ) {
-	     if ( typed.debug ) { console.log(func); }
-	     func = new Function(func)();
-	     this.cache[type] = func;
-	}
+	if ( typed.debug ) { console.log(func); }
+
+	if ( this.cache === undefined ) { this.cache = {}; }
+
+	func = new Function(func)();
+	this.cache[type] = func;
 
 	return func;
     }
 
 
     function typedArrayFunctionExecute() {
-	var func = typedArrayFunctionConstructor.apply(this, arguments);
+	var func  = typedArrayFunctionConstructor.apply(this, arguments);
 
-	return func.apply(typed, arguments);
+	var reply = func.apply(typed, arguments);
+
+	return reply;
     }
 
     function typed(opts, func) {
