@@ -118,7 +118,6 @@
 		    , "isFinite", "isNaN" ]; 
 
       for( i = 0; i < math_unary.length; i++ ) {
-	if ( math_unary.hasOwnProperty(opname) ) {
 	    opname = op = math_unary[i];
 		
 	    ops[opname + "2"]            = typed("function (a, b   )    {            a = " + op + "(b); }");
@@ -128,7 +127,6 @@
 
 	    ops[opname]       = onefourtwo     (ops[opname + "2"]);
 	    ops[opname].baked = onefourtwo_bake(ops[opname + "2"]);
-	}
       }
 
     var math_comm = [ "max", "min" ];
