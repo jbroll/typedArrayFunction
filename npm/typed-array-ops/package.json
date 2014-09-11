@@ -1,6 +1,6 @@
 {
   "name": "typed-array-ops",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "Element wise operator functions for ndarray data.",
   "main": "typed-array-ops.js",
   "dependencies": {
