@@ -1,6 +1,6 @@
 {
   "name": "typed-array-warp",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Warp a data array",
   "main": "typed-array-warp.js",
   "dependencies": {
