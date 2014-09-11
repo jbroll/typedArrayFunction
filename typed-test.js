@@ -6,6 +6,7 @@
 
 var assert = require('nodeunit').assert;
 
+
     assert.ae = function (a, b, message) { assert.deepEqual(a.data, b.data, message); }
     assert.equal      = assert.deepEqual;
 
@@ -73,6 +74,8 @@ exports.basics = function(unit) {
     ndops.sub(here, ndar, ndar); 	unit.ae(typed.sub(ther, data, data), here, "Three address sub");
     ndops.mul(here, ndar, ndar); 	unit.ae(typed.mul(ther, data, data), here, "Three address mul");
     ndops.div(here, ndar, ndar); 	unit.ae(typed.div(ther, data, data), here, "Three address div");
+
+    unit.ae(typed.abs(data), data, "Math.abs")
 
 
     unit.done();

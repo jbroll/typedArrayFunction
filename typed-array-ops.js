@@ -118,8 +118,16 @@
 		    , "isFinite", "isNaN" ]; 
 
       for( i = 0; i < math_unary.length; i++ ) {
-	    opname = op = math_unary[i];
-		
+	    op = math_unary[i];
+
+	    opname = op.split(".")
+
+	    if ( opname.length == 2 ) {
+		opname = opname[1]
+	    } else {
+		opname = opname[0]
+	    }
+
 	    ops[opname + "2"]            = typed("function (a, b   )    {            a = " + op + "(b); }");
 	    ops[opname + "_mask"]        = typed("function (a, b   , m) { if ( m ) { a = " + op + "(b); } }");
 	    ops[opname + "eq"]           = typed("function (a      )    {            a = " + op + "(a); }");
